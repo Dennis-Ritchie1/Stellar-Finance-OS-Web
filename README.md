@@ -76,3 +76,16 @@ Public pay pages: `http://localhost:5174/i/pub_1001` (unpaid), `/i/pub_1006` (pa
 | `pnpm test`         | Vitest in every package                                                                          |
 | `pnpm format`       | Prettier                                                                                         |
 | `pnpm api:generate` | Regenerate `packages/api-client/src/schema.ts` from the backend (`--seed` to use the local spec) |
+
+## Configuration
+
+Both apps read one `.env` at the **repo root** (`envDir: '../..'` in each `vite.config.ts`). Copy `.env.example`.
+
+| Variable               | Default                    | Used by   | Purpose                                                                      |
+| ---------------------- | -------------------------- | --------- | ---------------------------------------------------------------------------- |
+| `VITE_API_URL`         | `http://localhost:3000/v1` | both      | Backend base URL (also the base the mocks answer on)                         |
+| `VITE_STELLAR_NETWORK` | `testnet`                  | both      | `testnet` or `mainnet`; must match the backend. Drives wallet network checks |
+| `VITE_EXPLORER_URL`    | stellar.expert testnet     | both      | "View on explorer" links                                                     |
+| `VITE_PAY_APP_URL`     | `http://localhost:5174`    | dashboard | Base of invoice pay links (`/i/:publicToken`)                                |
+| `VITE_HORIZON_URL`     | Horizon testnet            | pay       | Where the pay page loads the payer's account and submits their payment       |
+| `VITE_ENABLE_MOCKS`    | `true`                     | both      | Dev only: serve the API from MSW. Ignored in production builds               |
