@@ -15,3 +15,4 @@ export { Spinner } from './components/spinner';
 export { CopyButton, type CopyButtonProps } from './components/copy-button';
 export { Input } from './components/input';
 export { Label } from './components/label';
+export { Textarea } from './components/textarea';
