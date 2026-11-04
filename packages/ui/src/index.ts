@@ -50,3 +50,4 @@ export {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from './components/dropdown-menu';
+export { Skeleton } from './components/skeleton';
