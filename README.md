@@ -331,3 +331,29 @@ Business rules in the mocks exist only because they stand in for the server. Nev
 - **CI** (`.github/workflows/ci.yml`) runs `pnpm lint`, `typecheck`, `test` and `build` on pushes to `main` and on PRs.
 - Turborepo caches tasks; the `transit` task makes typecheck/lint/test re-run when a dependency package changes.
 - Playwright E2E is not set up yet (task 13).
+
+## Conventions
+
+The full rules for contributors and AI assistants are in [`AGENTS.md`](AGENTS.md). The essentials:
+
+1. Never request, store, or handle a secret key. Signing goes through `packages/wallet` only.
+2. Never hand-edit `packages/api-client/src/schema.ts`.
+3. No business logic in components — no matching, no approval threshold math. Display what the API returns.
+4. Amounts are strings. Format and validate with `@finance-os/utils`; ESLint bans `parseFloat`.
+5. Shared components live in `packages/ui`; apps import, never duplicate.
+6. Every screen handles loading, empty, error and permission-denied (use `QueryView`).
+7. The pay app is mobile-first; the dashboard works down to tablet width.
+8. Run `pnpm lint && pnpm typecheck && pnpm test` before declaring a task done.
+
+**Where new code goes:** a screen → `apps/dashboard/src/routes/` (+ a `*.test.tsx`); its building blocks →
+`apps/dashboard/src/features/<domain>/`; a reusable component → `packages/ui`; a new endpoint → the backend spec (or
+`openapi.seed.json`), then `pnpm api:generate`, a hook in `packages/api-client/src/hooks/` and a mock handler.
+
+### Display rules
+
+- Show the asset code next to every amount (`5,000.00 USDC`).
+- Truncate Stellar addresses (`GABC…WXYZ`) with copy and a "View on explorer" link for the current network.
+- Dates in the user's local timezone; relative time on lists ("3 days overdue").
+- Plain language for a non-crypto audience: "Payment received", not "Operation detected". Hide hashes behind explorer links.
+- Calm, neutral look with one accent colour and clear status badges (`Draft`, `Sent`, `Partially paid`, `Paid`, `Overdue`,
+  `Void`); dark mode via the `.dark` class (toggle in the user menu).
