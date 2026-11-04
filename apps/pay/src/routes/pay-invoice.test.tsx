@@ -11,6 +11,7 @@ const invoice: PublicInvoice = {
   status: 'sent',
   amount: '1250.00',
   amountPaid: '0',
+  amountDue: '1250.00',
   assetCode: 'USDC',
   dueDate: '2026-12-01T00:00:00Z',
   lineItems: [
