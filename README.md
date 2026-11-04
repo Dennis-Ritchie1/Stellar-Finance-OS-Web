@@ -185,3 +185,23 @@ _"If you pay to the G-address, you must include this memo or your payment can't 
 
 Code: `apps/pay/src/components/use-wallet-payment.ts`, `connect-wallet-pay.tsx`, `pay-from-any-wallet.tsx`.
 stellar-sdk is loaded lazily (`lib/horizon.ts`) so the page stays light for first-time visitors on mobile.
+
+## Dashboard app
+
+`apps/dashboard` · Vite + React · port 5173 · works down to tablet width (navigation moves into a drawer below `lg`).
+
+| Route                                                           | Screen (`src/routes/…`)     | What it does                                                                                              |
+| --------------------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `/login`, `/register`                                           | `login.tsx`, `register.tsx` | Email/password; sign-up creates the organization                                                          |
+| `/`                                                             | `home.tsx`                  | Open & overdue invoices, pending approvals, unmatched payments, 30-day cash-flow chart, treasury balances |
+| `/invoices`                                                     | `invoices.tsx`              | Status filter (`?status=`), sortable table, quick actions: send, void, copy pay link                      |
+| `/invoices/new`, `/invoices/:id/edit`                           | `invoice-editor.tsx`        | Client, currency, due date, line items with live estimated total; drafts only for edit                    |
+| `/invoices/:id`                                                 | `invoice-detail.tsx`        | Summary, line items, pay link, payment reference (muxed address + memo), payments received                |
+| `/clients`                                                      | `clients.tsx`               | Client records and linked sender addresses                                                                |
+| `/vendors`                                                      | `vendors.tsx`               | Payout address and required memo (validated per memo type)                                                |
+| `/payments/outgoing`                                            | `payments-outgoing.tsx`     | Payment requests; `?request=<id>` opens the drawer with approvals and **Sign & send**                     |
+| `/approvals`                                                    | `approvals.tsx`             | Requests awaiting _your_ approval; approve or reject (reason required)                                    |
+| `/transactions`                                                 | `transactions.tsx`          | All payments in and out; `?filter=unmatched`; **Match** drawer links a payment to an invoice              |
+| `/reports`                                                      | `reports.tsx`               | Date range (`?from=&to=`), totals, money in/out and balance charts                                        |
+| `/exports`                                                      | `exports.tsx`               | Reconciliation CSV download for a date range                                                              |
+| `/settings` (+ `/members`, `/treasury`, `/policies`, `/wallet`) | `settings/*.tsx`            | Org profile, members & roles, treasury accounts, approval policies, linked wallet                         |
