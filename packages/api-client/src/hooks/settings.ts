@@ -14,7 +14,11 @@ export function useUpdateOrg() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (body: OrgInput) => unwrap(await api.PATCH('/org', { body })),
-    onSuccess: (org) => qc.setQueryData(keys.org, org),
+    onSuccess: (org) => {
+      qc.setQueryData(keys.org, org);
+      // Org names also appear in the user's memberships (org switcher).
+      return qc.invalidateQueries({ queryKey: keys.me });
+    },
   });
 }
 
