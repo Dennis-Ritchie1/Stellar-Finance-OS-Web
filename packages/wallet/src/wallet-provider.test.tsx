@@ -57,3 +57,15 @@ describe('WalletProvider', () => {
     expect(result.current.status).toBe('disconnected');
   });
 });
+
+describe('WalletProvider stale closures', () => {
+  it('signs right after connecting with the same hook snapshot', async () => {
+    const { result, fake } = setup({ address: 'GPAYER' });
+    const { connect, signTransaction } = result.current;
+    await act(async () => {
+      await connect();
+      expect(await signTransaction('XDR')).toBe('signed:XDR');
+    });
+    expect(fake.calls.signed).toEqual(['XDR']);
+  });
+});
