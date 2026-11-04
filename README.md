@@ -42,3 +42,37 @@ wired up yet — `packages/api-client/openapi.seed.json` is the API contract the
 | Vendors, payment requests, multi-approver approvals                   | Playwright end-to-end tests (task 13)                   |
 | Sign & send outgoing payments                                         | Route-level code splitting for the dashboard bundle     |
 | Transactions + manual match, dashboard, reports, CSV export, settings |                                                         |
+
+## Quick start
+
+Requires Node 22+ (`.nvmrc` pins 24) and pnpm 12.
+
+```bash
+pnpm install
+cp .env.example .env     # mocks are on by default
+pnpm dev                 # dashboard → http://localhost:5173 · pay → http://localhost:5174
+```
+
+With `VITE_ENABLE_MOCKS=true` the whole API is served in the browser by MSW — no backend needed. Log in with any of these
+(password `password`):
+
+| Email                            | Role                                                        |
+| -------------------------------- | ----------------------------------------------------------- |
+| `ada@acme.test`                  | Owner (also Admin of a second org, to try the org switcher) |
+| `ben@acme.test`, `eze@acme.test` | Approver                                                    |
+| `chi@acme.test`                  | Accountant                                                  |
+| `dee@acme.test`                  | Viewer                                                      |
+
+Public pay pages: `http://localhost:5174/i/pub_1001` (unpaid), `/i/pub_1006` (partially paid), `/i/pub_1003` (paid).
+
+### Scripts
+
+| Command             | What it does                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `pnpm dev`          | Run both apps (Turborepo)                                                                        |
+| `pnpm build`        | Typecheck and build both apps to `apps/*/dist`                                                   |
+| `pnpm lint`         | ESLint across the workspace                                                                      |
+| `pnpm typecheck`    | `tsc --noEmit` in every package                                                                  |
+| `pnpm test`         | Vitest in every package                                                                          |
+| `pnpm format`       | Prettier                                                                                         |
+| `pnpm api:generate` | Regenerate `packages/api-client/src/schema.ts` from the backend (`--seed` to use the local spec) |
