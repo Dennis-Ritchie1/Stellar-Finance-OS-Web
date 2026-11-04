@@ -1,0 +1,109 @@
+import { setupServer } from 'msw/node';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { createApiClient } from '../client';
+import { unwrap } from '../errors';
+import { createDb, createHandlers, type MockDb } from './index';
+
+const baseUrl = 'http://api.test/v1';
+let db: MockDb;
+const server = setupServer();
+
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
+beforeEach(() => {
+  db = createDb();
+  server.resetHandlers(...createHandlers({ baseUrl, db }));
+});
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+async function as(email: string) {
+  const anon = createApiClient({ baseUrl });
+  const session = unwrap(await anon.POST('/auth/login', { body: { email, password: 'password' } }));
+  return createApiClient({ baseUrl, getToken: () => session.token });
+}
+
+describe('mock backend', () => {
+  it('rejects bad credentials and unauthenticated calls', async () => {
+    const anon = createApiClient({ baseUrl });
+    const login = await anon.POST('/auth/login', {
+      body: { email: 'ada@acme.test', password: 'x' },
+    });
+    expect(login.response.status).toBe(401);
+    const me = await anon.GET('/me');
+    expect(me.response.status).toBe(401);
+  });
+
+  it('creates and sends an invoice', async () => {
+    const api = await as('chi@acme.test');
+    const created = unwrap(
+      await api.POST('/invoices', {
+        body: {
+          clientId: 'c_initech',
+          assetCode: 'USDC',
+          dueDate: new Date().toISOString(),
+          lineItems: [{ description: 'Work', quantity: '3', unitPrice: '100.10' }],
+        },
+      }),
+    );
+    expect(created).toMatchObject({ status: 'draft', amount: '300.30' });
+    const sent = unwrap(
+      await api.POST('/invoices/{id}/send', { params: { path: { id: created.id } } }),
+    );
+    expect(sent.status).toBe('sent');
+  });
+
+  it('forbids viewers from writing', async () => {
+    const api = await as('dee@acme.test');
+    const res = await api.POST('/clients', { body: { name: 'X', email: 'x@x.test' } });
+    expect(res.response.status).toBe(403);
+  });
+
+  it('needs two approvals for large payments', async () => {
+    const ben = await as('ben@acme.test');
+    const eze = await as('eze@acme.test');
+    // pr_1 (6,500 USDC) already has Ben's approval.
+    expect(unwrap(await ben.GET('/approvals')).data.map((p) => p.id)).not.toContain('pr_1');
+    const after = unwrap(
+      await eze.POST('/payment-requests/{id}/approve', {
+        params: { path: { id: 'pr_1' } },
+        body: {},
+      }),
+    );
+    expect(after.status).toBe('approved');
+  });
+
+  it('builds an unsigned transaction for an approved request', async () => {
+    const chi = await as('chi@acme.test');
+    const built = unwrap(
+      await chi.POST('/payment-requests/{id}/build-tx', { params: { path: { id: 'pr_2' } } }),
+    );
+    expect(built.xdr).toMatch(/^AAAA/);
+    expect(built.summary).toMatchObject({ amount: '850.00', assetCode: 'USDC' });
+  });
+
+  it('manually matches an unmatched payment to an invoice', async () => {
+    const chi = await as('chi@acme.test');
+    unwrap(
+      await chi.POST('/transactions/{id}/match', {
+        params: { path: { id: 'tx_4' } },
+        body: { invoiceId: 'inv_1001' },
+      }),
+    );
+    const invoice = unwrap(
+      await chi.GET('/invoices/{id}', { params: { path: { id: 'inv_1001' } } }),
+    );
+    expect(invoice.status).toBe('paid');
+    expect(invoice.matches).toHaveLength(1);
+  });
+
+  it('exports CSV for a date range', async () => {
+    const chi = await as('chi@acme.test');
+    const { data } = await chi.GET('/exports/reconciliation', {
+      params: { query: { from: '2000-01-01', to: '2100-01-01' } },
+      parseAs: 'text',
+    });
+    expect(data?.split('\n')[0]).toBe(
+      'date,direction,amount,asset,from,to,memo,status,invoice,payment_request,tx_hash',
+    );
+  });
+});
