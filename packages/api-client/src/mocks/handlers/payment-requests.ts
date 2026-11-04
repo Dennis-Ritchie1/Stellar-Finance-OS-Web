@@ -1,3 +1,4 @@
+import Big from 'big.js';
 import { Account, Asset, Memo, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
 import { http, HttpResponse } from 'msw';
 import type { PaymentRequest, PaymentRequestInput } from '../../types';
@@ -52,7 +53,7 @@ function settle(db: MockDb, request: PaymentRequest) {
   request.status = 'settled';
   const account = db.treasuryAccounts.find((a) => a.id === request.treasuryAccountId);
   const balance = account?.balances.find((b) => b.assetCode === request.assetCode);
-  if (balance) balance.amount = (Number.NaN, String(balance.amount)); // balance refresh is the indexer's job
+  if (balance) balance.amount = new Big(balance.amount).minus(request.amount).toFixed(2);
   db.transactions.unshift({
     id: newId('tx'),
     txHash: request.txHash!,
