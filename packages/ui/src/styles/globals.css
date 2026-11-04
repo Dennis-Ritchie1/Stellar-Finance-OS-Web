@@ -35,6 +35,9 @@
   --status-success: oklch(0.5 0.12 155);
   --status-warning: oklch(0.58 0.13 70);
   --status-danger: oklch(0.55 0.19 27);
+  /* Chart series (categorical slots 1–2, validated for CVD + contrast). Never status colors. */
+  --chart-1: #2a78d6;
+  --chart-2: #eb6834;
   --sidebar: oklch(0.975 0.003 247);
   --sidebar-foreground: var(--foreground);
   --sidebar-border: var(--border);
@@ -65,6 +68,8 @@
   --status-success: oklch(0.74 0.14 155);
   --status-warning: oklch(0.8 0.13 80);
   --status-danger: oklch(0.7 0.17 25);
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
   --sidebar: oklch(0.19 0.011 255);
   --sidebar-foreground: var(--foreground);
   --sidebar-border: var(--border);
@@ -99,6 +104,8 @@
   --color-status-success: var(--status-success);
   --color-status-warning: var(--status-warning);
   --color-status-danger: var(--status-danger);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-border: var(--sidebar-border);
