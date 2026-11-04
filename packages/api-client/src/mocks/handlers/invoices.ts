@@ -114,6 +114,7 @@ export const invoiceHandlers = ({ db, base }: MockContext) => [
       status: invoice.status,
       amount: invoice.amount,
       amountPaid: invoice.amountPaid,
+      amountDue: Big(invoice.amount).minus(invoice.amountPaid).toFixed(2),
       assetCode: invoice.assetCode,
       dueDate: invoice.dueDate,
       lineItems: invoice.lineItems,
