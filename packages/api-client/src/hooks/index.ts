@@ -6,3 +6,4 @@ export * from './vendors';
 export * from './treasury';
 export * from './payment-requests';
 export * from './approvals';
+export * from './transactions';
