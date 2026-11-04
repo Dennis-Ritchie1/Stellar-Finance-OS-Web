@@ -6,3 +6,4 @@ export {
   PaymentError,
   type InvoicePayment,
 } from './payment';
+export { describeWalletError } from './errors';
