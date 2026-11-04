@@ -52,3 +52,4 @@ export {
 } from './components/dropdown-menu';
 export { Skeleton } from './components/skeleton';
 export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from './components/table';
+export { Separator } from './components/separator';
