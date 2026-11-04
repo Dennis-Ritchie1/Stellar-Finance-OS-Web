@@ -9,7 +9,9 @@ describe('settings', () => {
     const user = userEvent.setup();
     const owner = renderApp('/settings/members', { as: 'owner' });
     await user.selectOptions(await screen.findByLabelText('Role for Ben Adeyemi'), 'accountant');
-    await waitFor(() => expect(db.members.find((m) => m.userId === 'u_ben')!.role).toBe('accountant'));
+    await waitFor(() =>
+      expect(db.members.find((m) => m.userId === 'u_ben')!.role).toBe('accountant'),
+    );
     owner.unmount();
 
     // Ben was an approver (no invoice rights); as an accountant he can now create invoices.
