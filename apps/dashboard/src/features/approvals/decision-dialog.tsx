@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   useApprovePaymentRequest,
   useRejectPaymentRequest,
@@ -20,12 +20,13 @@ import { FormError } from '../../components/forms/form-error';
 
 export type Decision = 'approve' | 'reject';
 
+/** Mount with a `key` per request so its form state starts fresh. */
 export function DecisionDialog({
   request,
   decision,
   onClose,
 }: {
-  request: PaymentRequest | null;
+  request: PaymentRequest;
   decision: Decision;
   onClose: () => void;
 }) {
@@ -35,16 +36,6 @@ export function DecisionDialog({
   const [comment, setComment] = useState('');
   const [touched, setTouched] = useState(false);
   const needsComment = decision === 'reject' && !comment.trim();
-
-  useEffect(() => {
-    setComment('');
-    setTouched(false);
-    approve.reset();
-    reject.reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- reset when a new request opens
-  }, [request?.id, decision]);
-
-  if (!request) return null;
 
   const submit = () => {
     setTouched(true);

@@ -74,11 +74,14 @@ export function ApprovalsPage() {
           </ul>
         )}
       </QueryView>
-      <DecisionDialog
-        request={active?.request ?? null}
-        decision={active?.decision ?? 'approve'}
-        onClose={() => setActive(null)}
-      />
+      {active ? (
+        <DecisionDialog
+          key={`${active.request.id}-${active.decision}`}
+          request={active.request}
+          decision={active.decision}
+          onClose={() => setActive(null)}
+        />
+      ) : null}
     </>
   );
 }
