@@ -29,7 +29,7 @@ export function PayFromAnyWallet({ invoice }: { invoice: PublicInvoice }) {
   const { address, memo, memoType, assetIssuer } = invoice.payment;
   const uri = buildSep7PayUri({
     destination: address,
-    amount: invoice.amount,
+    amount: invoice.amountDue,
     assetCode: invoice.assetCode,
     assetIssuer,
     memo,
@@ -52,7 +52,7 @@ export function PayFromAnyWallet({ invoice }: { invoice: PublicInvoice }) {
           <Field label="Address" value={address} copyLabel="Copy address" />
           <Field label="Memo" value={memo} copyLabel="Copy memo" />
           <Field
-            label={`Amount (${invoice.assetCode})`}
+            label={`Amount due (${invoice.assetCode})`}
             value={invoice.amount}
             copyLabel="Copy amount"
           />
