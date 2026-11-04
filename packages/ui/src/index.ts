@@ -39,3 +39,14 @@ export {
   SheetDescription,
   SheetFooter,
 } from './components/sheet';
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+  DropdownMenuRadioGroup,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from './components/dropdown-menu';
