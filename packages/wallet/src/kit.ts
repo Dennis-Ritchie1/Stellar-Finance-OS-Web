@@ -1,7 +1,12 @@
 // Thin wrapper around Stellar Wallets Kit. Apps never import the kit directly.
 // The kit is loaded lazily so it doesn't weigh down first paint (important for the pay app).
 // This package never sees a secret key — wallets sign, we only pass XDR in and out.
-import { checkNetwork, NETWORK_PASSPHRASES, type StellarNetwork, type WalletCheck } from './network';
+import {
+  checkNetwork,
+  NETWORK_PASSPHRASES,
+  type StellarNetwork,
+  type WalletCheck,
+} from './network';
 
 type Kit = typeof import('@creit.tech/stellar-wallets-kit/sdk').StellarWalletsKit;
 
