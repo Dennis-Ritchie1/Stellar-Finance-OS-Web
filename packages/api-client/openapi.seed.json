@@ -1689,6 +1689,10 @@
           },
           "payment": {
             "$ref": "#/components/schemas/PaymentReference"
+          },
+          "amountDue": {
+            "type": "string",
+            "description": "Amount still to pay (amount - amountPaid), computed by the server"
           }
         },
         "required": [
@@ -1700,7 +1704,8 @@
           "assetCode",
           "dueDate",
           "lineItems",
-          "payment"
+          "payment",
+          "amountDue"
         ]
       },
       "Error": {

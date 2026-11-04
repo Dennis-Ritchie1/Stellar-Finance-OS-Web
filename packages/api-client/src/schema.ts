@@ -565,6 +565,8 @@ export interface components {
             dueDate: string;
             lineItems: components["schemas"]["LineItem"][];
             payment: components["schemas"]["PaymentReference"];
+            /** @description Amount still to pay (amount - amountPaid), computed by the server */
+            amountDue: string;
         };
         Error: {
             code: string;
