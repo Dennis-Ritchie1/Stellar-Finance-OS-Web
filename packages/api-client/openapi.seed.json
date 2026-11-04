@@ -14,7 +14,9 @@
             "name": "status",
             "in": "query",
             "required": false,
-            "schema": { "$ref": "#/components/schemas/InvoiceStatus" }
+            "schema": {
+              "$ref": "#/components/schemas/InvoiceStatus"
+            }
           }
         ],
         "responses": {
@@ -26,7 +28,12 @@
                   "type": "object",
                   "required": ["data"],
                   "properties": {
-                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Invoice" } }
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Invoice"
+                      }
+                    }
                   }
                 }
               }
@@ -39,16 +46,29 @@
       "get": {
         "operationId": "getPublicInvoice",
         "parameters": [
-          { "name": "publicToken", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "publicToken",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Public view of an invoice for the pay page",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/PublicInvoice" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicInvoice"
+                }
+              }
             }
           },
-          "404": { "description": "Not found" }
+          "404": {
+            "description": "Not found"
+          }
         }
       }
     }
@@ -63,13 +83,29 @@
         "type": "object",
         "required": ["id", "number", "status", "amount", "assetCode", "dueDate", "clientName"],
         "properties": {
-          "id": { "type": "string" },
-          "number": { "type": "string" },
-          "status": { "$ref": "#/components/schemas/InvoiceStatus" },
-          "amount": { "type": "string", "description": "Decimal string" },
-          "assetCode": { "type": "string" },
-          "dueDate": { "type": "string", "format": "date-time" },
-          "clientName": { "type": "string" }
+          "id": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvoiceStatus"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Decimal string"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "clientName": {
+            "type": "string"
+          }
         }
       },
       "PublicInvoice": {
@@ -85,22 +121,43 @@
           "payment"
         ],
         "properties": {
-          "businessName": { "type": "string" },
-          "number": { "type": "string" },
-          "status": { "$ref": "#/components/schemas/InvoiceStatus" },
-          "amount": { "type": "string" },
-          "assetCode": { "type": "string" },
-          "dueDate": { "type": "string", "format": "date-time" },
+          "businessName": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvoiceStatus"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
           "lineItems": {
             "type": "array",
             "items": {
               "type": "object",
               "required": ["description", "quantity", "unitPrice", "total"],
               "properties": {
-                "description": { "type": "string" },
-                "quantity": { "type": "string" },
-                "unitPrice": { "type": "string" },
-                "total": { "type": "string" }
+                "description": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "string"
+                },
+                "unitPrice": {
+                  "type": "string"
+                },
+                "total": {
+                  "type": "string"
+                }
               }
             }
           },
@@ -108,13 +165,33 @@
             "type": "object",
             "required": ["muxedAddress", "address", "memo", "assetIssuer"],
             "properties": {
-              "muxedAddress": { "type": "string" },
-              "address": { "type": "string" },
-              "memo": { "type": "string" },
-              "assetIssuer": { "type": "string" }
+              "muxedAddress": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              },
+              "memo": {
+                "type": "string"
+              },
+              "assetIssuer": {
+                "type": "string"
+              }
             }
           }
         }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["code", "message"]
       }
     }
   }

@@ -74,6 +74,10 @@ export interface components {
                 assetIssuer: string;
             };
         };
+        Error: {
+            code: string;
+            message: string;
+        };
     };
     responses: never;
     parameters: never;
