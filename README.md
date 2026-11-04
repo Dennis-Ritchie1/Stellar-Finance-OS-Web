@@ -299,3 +299,24 @@ This package never sees a secret key.
 | `date.ts`    | `formatDate`, `formatRelative`, `daysOverdue` (local timezone)                                                                                        |
 | `address.ts` | `truncateAddress` (`GABC…WXYZ`), `explorerUrl`                                                                                                        |
 | `stellar.ts` | `isStellarAccountId`, `isMuxedAddress`, `isValidMemo` (form validation only — the backend is authoritative)                                           |
+
+## Mock API
+
+`packages/api-client/src/mocks` is an in-memory stand-in for `finance-os-backend`, used by `pnpm dev` (browser service
+worker) and by every app test (`msw/node`).
+
+| File                      | Role                                                                                                                                                                                               |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `db.ts`                   | `createDb()` — fixtures: 5 users across 2 orgs, 3 clients, 6 invoices in every status, 3 vendors, 2 treasury accounts, 5 payment requests, matched and unmatched transactions, 2 approval policies |
+| `constants.ts`            | Valid (unfunded) testnet addresses and precomputed muxed addresses; Circle's testnet USDC issuer                                                                                                   |
+| `context.ts`, `policy.ts` | Token auth, `X-Org-Id`, server-side role checks and approval-policy rules — so the UI's permission states are exercised realistically                                                              |
+| `handlers/*.ts`           | One file per resource                                                                                                                                                                              |
+| `series.ts`               | Deterministic cash-flow history for charts                                                                                                                                                         |
+| `browser.ts`              | `startMockWorker(baseUrl)` used by each app's `src/mocks.ts`                                                                                                                                       |
+
+Behaviour worth knowing: payments of 5,000 USDC or more need two approvals; `build-tx` returns a real unsigned XDR;
+`submit` moves a request to "submitted" and the fake indexer settles it about 3 s later. Nothing indexes _real_ testnet
+payments in mock mode, so a real wallet payment won't flip an invoice to Paid without the backend. The mock addresses are
+unfunded — fund them with Friendbot to try a real wallet payment.
+
+Business rules in the mocks exist only because they stand in for the server. Never copy them into the UI.
