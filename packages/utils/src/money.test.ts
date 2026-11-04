@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatAmount, formatDecimal, isValidAmount } from './money';
+import { formatAmount, formatDecimal, isValidAmount, multiplyDecimals, sumDecimals } from './money';
 
 describe('money', () => {
   it('formats with grouping and asset code', () => {
@@ -21,5 +21,16 @@ describe('money', () => {
     expect(isValidAmount('0')).toBe(false);
     expect(isValidAmount('1.12345678')).toBe(false);
     expect(isValidAmount('abc')).toBe(false);
+  });
+});
+
+describe('decimal math for previews', () => {
+  it('multiplies without float error', () => {
+    expect(multiplyDecimals('3', '0.1')).toBe('0.30');
+    expect(multiplyDecimals('x', '1')).toBe('');
+  });
+
+  it('sums and ignores invalid entries', () => {
+    expect(sumDecimals(['0.1', '0.2', 'abc', ''])).toBe('0.30');
   });
 });

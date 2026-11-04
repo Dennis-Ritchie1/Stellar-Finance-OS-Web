@@ -42,3 +42,25 @@ export function formatAmount(
 export function isValidAmount(amount: string): boolean {
   return /^\d+(\.\d{1,7})?$/.test(amount.trim()) && new Big(amount.trim()).gt(0);
 }
+
+/** Exact decimal product for previews (e.g. a line total). Returns "" for invalid input. */
+export function multiplyDecimals(a: string, b: string, decimals = 2): string {
+  try {
+    return new Big(a || '0').times(b || '0').toFixed(decimals, Big.roundHalfUp);
+  } catch {
+    return '';
+  }
+}
+
+/** Exact decimal sum; invalid entries count as zero. */
+export function sumDecimals(values: string[], decimals = 2): string {
+  return values
+    .reduce((acc, v) => {
+      try {
+        return acc.plus(v || '0');
+      } catch {
+        return acc;
+      }
+    }, new Big(0))
+    .toFixed(decimals, Big.roundHalfUp);
+}
