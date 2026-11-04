@@ -67,3 +67,5 @@ export {
 export { PaymentStatusBadge, type PaymentRequestStatus } from './components/payment-status-badge';
 export { ChartTable } from './components/chart-table';
 export { ChartTooltipCard, type ChartTooltipRow } from './components/chart-tooltip';
+export { CashflowChart, type CashflowPoint } from './components/cashflow-chart';
+export { BalanceChart, type BalancePoint } from './components/balance-chart';
