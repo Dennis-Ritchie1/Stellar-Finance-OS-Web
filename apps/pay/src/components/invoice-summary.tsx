@@ -28,7 +28,9 @@ export function InvoiceSummary({ invoice }: { invoice: PublicInvoice }) {
         </ul>
         <div className="flex items-end justify-between border-t pt-4">
           <span className="text-sm text-muted-foreground">Due {formatDate(invoice.dueDate)}</span>
-          <span className="text-2xl font-semibold tabular-nums">{formatAmount(invoice.amount, invoice.assetCode)}</span>
+          <span className="text-2xl font-semibold tabular-nums">
+            {formatAmount(invoice.amount, invoice.assetCode)}
+          </span>
         </div>
       </CardContent>
     </Card>

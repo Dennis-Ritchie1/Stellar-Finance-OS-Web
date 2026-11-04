@@ -5,7 +5,9 @@ import { env } from './env';
 
 /** Public app: no auth token, just the API client and query cache. */
 export function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: 1 } } }));
+  const [queryClient] = useState(
+    () => new QueryClient({ defaultOptions: { queries: { retry: 1 } } }),
+  );
   const [apiClient] = useState(() => createApiClient({ baseUrl: env.apiUrl }));
   return (
     <ApiClientProvider client={apiClient}>

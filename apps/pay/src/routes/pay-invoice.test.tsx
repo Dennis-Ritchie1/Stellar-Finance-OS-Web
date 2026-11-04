@@ -12,14 +12,22 @@ const invoice: PublicInvoice = {
   amount: '1250.00',
   assetCode: 'USDC',
   dueDate: '2026-12-01T00:00:00Z',
-  lineItems: [{ description: 'Design work', quantity: '1', unitPrice: '1250.00', total: '1250.00' }],
+  lineItems: [
+    { description: 'Design work', quantity: '1', unitPrice: '1250.00', total: '1250.00' },
+  ],
   payment: { muxedAddress: 'MDEST', address: 'GDEST', memo: '42', assetIssuer: 'GISSUER' },
 };
 
 function mockApi(status: number, body?: unknown) {
   vi.stubGlobal(
     'fetch',
-    vi.fn(async () => new Response(body ? JSON.stringify(body) : null, { status, headers: { 'Content-Type': 'application/json' } })),
+    vi.fn(
+      async () =>
+        new Response(body ? JSON.stringify(body) : null, {
+          status,
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    ),
   );
 }
 
@@ -53,7 +61,9 @@ describe('pay invoice page', () => {
   it('shows an error for an unknown link', async () => {
     mockApi(404);
     renderAt('/i/missing');
-    expect(await screen.findByText("We couldn't load this invoice", {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(
+      await screen.findByText("We couldn't load this invoice", {}, { timeout: 3000 }),
+    ).toBeInTheDocument();
   });
 
   it('asks for a link at the root', async () => {

@@ -12,7 +12,12 @@ const POLL_MS = 5_000;
 
 export function PayInvoicePage() {
   const { publicToken = '' } = useParams();
-  const { data: invoice, isPending, isError, refetch } = usePublicInvoice(publicToken, { pollMs: POLL_MS });
+  const {
+    data: invoice,
+    isPending,
+    isError,
+    refetch,
+  } = usePublicInvoice(publicToken, { pollMs: POLL_MS });
 
   if (isPending) return <Spinner label="Loading invoice" />;
 
@@ -22,7 +27,11 @@ export function PayInvoicePage() {
         icon={<AlertTriangle />}
         title="We couldn't load this invoice"
         description="The link may be wrong or expired. Check with the business that sent it."
-        action={<Button variant="outline" onClick={() => refetch()}>Try again</Button>}
+        action={
+          <Button variant="outline" onClick={() => refetch()}>
+            Try again
+          </Button>
+        }
       />
     );
   }
@@ -33,9 +42,16 @@ export function PayInvoicePage() {
       {invoice.status === 'paid' ? (
         <PaidBanner />
       ) : invoice.status === 'void' ? (
-        <EmptyState icon={<Ban />} title="This invoice was cancelled" description="No payment is needed." />
+        <EmptyState
+          icon={<Ban />}
+          title="This invoice was cancelled"
+          description="No payment is needed."
+        />
       ) : invoice.status === 'draft' ? (
-        <EmptyState title="This invoice isn't ready yet" description="The business hasn't sent it." />
+        <EmptyState
+          title="This invoice isn't ready yet"
+          description="The business hasn't sent it."
+        />
       ) : (
         <>
           <ConnectWalletPay />
