@@ -320,3 +320,14 @@ payments in mock mode, so a real wallet payment won't flip an invoice to Paid wi
 unfunded — fund them with Friendbot to try a real wallet payment.
 
 Business rules in the mocks exist only because they stand in for the server. Never copy them into the UI.
+
+## Testing & CI
+
+- **Vitest + React Testing Library** in every package (`pnpm test`). App tests render the real router and providers
+  (`renderApp(path, { as: 'accountant' })`, `renderPay(path)`) against the MSW mock backend, so they exercise the same
+  requests the browser makes. Each test gets a fresh mock database.
+- Wallets are replaced with `createFakeWalletClient()`; the pay app's Horizon client is mocked with `vi.mock`.
+- The dashboard test setup swaps in Node's `Uint8Array` because jsdom's breaks stellar-sdk's `instanceof` checks.
+- **CI** (`.github/workflows/ci.yml`) runs `pnpm lint`, `typecheck`, `test` and `build` on pushes to `main` and on PRs.
+- Turborepo caches tasks; the `transit` task makes typecheck/lint/test re-run when a dependency package changes.
+- Playwright E2E is not set up yet (task 13).
