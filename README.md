@@ -205,3 +205,16 @@ stellar-sdk is loaded lazily (`lib/horizon.ts`) so the page stays light for firs
 | `/reports`                                                      | `reports.tsx`               | Date range (`?from=&to=`), totals, money in/out and balance charts                                        |
 | `/exports`                                                      | `exports.tsx`               | Reconciliation CSV download for a date range                                                              |
 | `/settings` (+ `/members`, `/treasury`, `/policies`, `/wallet`) | `settings/*.tsx`            | Org profile, members & roles, treasury accounts, approval policies, linked wallet                         |
+
+## Pay app
+
+`apps/pay` · Vite + React · port 5174 · mobile-first, `noindex`.
+
+| Route             | Shows                                                                                                                                                                                                                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/i/:publicToken` | Business name, invoice number, line items, amount, due date, status; then **Connect wallet & pay** and **Pay from any wallet** (QR + copy buttons). Partially paid invoices ask only for the amount still due. Paid / void / draft invoices show the matching state instead of payment options. |
+| anything else     | "Invoice link needed"                                                                                                                                                                                                                                                                           |
+
+The invoice is polled every 5 s until it is paid or void.
+
+> ⚠️ SEP-7 QR support varies by wallet. Test the QR flow with the wallets your pilot businesses' clients actually use.
