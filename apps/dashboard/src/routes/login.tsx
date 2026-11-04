@@ -46,7 +46,9 @@ export function LoginPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Log in</CardTitle>
+        <CardTitle className="text-xl">
+          <h1>Log in</h1>
+        </CardTitle>
         <CardDescription>Welcome back to Finance OS.</CardDescription>
       </CardHeader>
       <CardContent>

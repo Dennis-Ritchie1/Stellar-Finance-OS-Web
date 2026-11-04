@@ -46,7 +46,9 @@ export function RegisterPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Create your account</CardTitle>
+        <CardTitle className="text-xl">
+          <h1>Create your account</h1>
+        </CardTitle>
         <CardDescription>
           Set up your business to send invoices and pay vendors in USDC.
         </CardDescription>
