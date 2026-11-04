@@ -18,3 +18,4 @@ export { Label } from './components/label';
 export { Textarea } from './components/textarea';
 export { NativeSelect } from './components/native-select';
 export { Field, type FieldProps } from './components/field';
+export { Alert, AlertTitle, AlertDescription } from './components/alert';
