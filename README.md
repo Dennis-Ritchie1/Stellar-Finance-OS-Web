@@ -147,6 +147,8 @@ VITE_API_URL=http://localhost:3000/v1
 VITE_STELLAR_NETWORK=testnet          # must match backend
 VITE_EXPLORER_URL=https://stellar.expert/explorer/testnet
 VITE_PAY_APP_URL=http://localhost:5174
+VITE_ENABLE_MOCKS=true                # dev only: serve the API from MSW mocks
+VITE_HORIZON_URL=https://horizon-testnet.stellar.org   # pay app builds & submits client payments here
 ```
 
 Copy it to `.env` at the repo root — both apps read env from the root (`envDir` in each `vite.config.ts`).
@@ -160,6 +162,20 @@ pnpm dev                 # dashboard on :5173, pay on :5174
 ```
 
 Until the backend is ready, use **MSW (Mock Service Worker)** with fixtures typed from the generated schema so UI work isn't blocked.
+
+With `VITE_ENABLE_MOCKS=true`, `pnpm dev` serves the whole API from `packages/api-client/src/mocks` (an in-memory backend with
+realistic fixtures). Log in with any of these (password `password`):
+
+| Email | Role |
+|---|---|
+| `ada@acme.test` | Owner (also Admin of a second org, for the org switcher) |
+| `ben@acme.test`, `eze@acme.test` | Approver |
+| `chi@acme.test` | Accountant |
+| `dee@acme.test` | Viewer |
+
+Public pay pages: `http://localhost:5174/i/pub_1001` (unpaid), `pub_1006` (partially paid), `pub_1003` (paid).
+Mock addresses are valid testnet keys but **unfunded** — fund them with Friendbot to try a real wallet payment. In mock mode
+nothing indexes real payments, so the "Paid ✓" flip after a real testnet payment needs the backend indexer.
 
 ### Scripts
 
