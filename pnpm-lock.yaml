@@ -382,6 +382,9 @@ importers:
       '@finance-os/utils':
         specifier: workspace:*
         version: link:../utils
+      '@tanstack/react-table':
+        specifier: ^9.3.1
+        version: 9.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
