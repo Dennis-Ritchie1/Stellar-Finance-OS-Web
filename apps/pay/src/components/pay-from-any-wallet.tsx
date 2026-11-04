@@ -53,7 +53,7 @@ export function PayFromAnyWallet({ invoice }: { invoice: PublicInvoice }) {
           <Field label="Memo" value={memo} copyLabel="Copy memo" />
           <Field
             label={`Amount due (${invoice.assetCode})`}
-            value={invoice.amount}
+            value={invoice.amountDue}
             copyLabel="Copy amount"
           />
         </dl>
