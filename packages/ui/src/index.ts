@@ -64,3 +64,4 @@ export {
   type DataTableFeatures,
   type DataTableProps,
 } from './components/data-table';
+export { PaymentStatusBadge, type PaymentRequestStatus } from './components/payment-status-badge';
