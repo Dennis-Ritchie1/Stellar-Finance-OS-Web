@@ -127,13 +127,14 @@ Internal packages are consumed as TypeScript source (their `exports` point at `s
 
 ### Data flow
 
-```mermaid
-flowchart LR
-  Screen["Screen (routes/*.tsx)"] --> Hook["Hook (api-client/hooks)"]
-  Hook --> Client["openapi-fetch client"]
-  Client -->|"Bearer token + X-Org-Id"| API[("Backend API<br/>or MSW mock")]
-  Hook --> Cache["TanStack Query cache"]
-  Screen --> QV["QueryView:<br/>loading · empty · error · denied"]
+```
+Screen (routes/*.tsx)
+  │  renders loading · empty · error · denied via QueryView
+  ▼
+Hook (@finance-os/api-client/hooks)  ──►  TanStack Query cache
+  │
+  ▼
+openapi-fetch client  ──  Authorization: Bearer <token>, X-Org-Id  ──►  Backend API (or MSW mock)
 ```
 
 - Screens never call `fetch`. They use hooks from `@finance-os/api-client` (`useInvoices`, `useApprovePaymentRequest`, …),
