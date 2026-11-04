@@ -2,6 +2,9 @@
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": ["VITE_API_URL", "VITE_STELLAR_NETWORK", "VITE_EXPLORER_URL", "VITE_PAY_APP_URL"],
   "tasks": {
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -10,9 +13,14 @@
       "cache": false,
       "persistent": true
     },
-    "lint": {},
-    "typecheck": {},
+    "lint": {
+      "dependsOn": ["transit"]
+    },
+    "typecheck": {
+      "dependsOn": ["transit"]
+    },
     "test": {
+      "dependsOn": ["transit"],
       "outputs": ["coverage/**"]
     }
   }
