@@ -9,7 +9,7 @@ import {
   CopyButton,
 } from '@finance-os/ui';
 import { AlertTriangle } from 'lucide-react';
-import { buildSep7PayUri } from '../lib/sep7';
+import { buildSep7PayUri, toSep7MemoType } from '../lib/sep7';
 
 function Field({ label, value, copyLabel }: { label: string; value: string; copyLabel: string }) {
   return (
@@ -26,13 +26,14 @@ function Field({ label, value, copyLabel }: { label: string; value: string; copy
 }
 
 export function PayFromAnyWallet({ invoice }: { invoice: PublicInvoice }) {
-  const { address, memo, assetIssuer } = invoice.payment;
+  const { address, memo, memoType, assetIssuer } = invoice.payment;
   const uri = buildSep7PayUri({
     destination: address,
     amount: invoice.amount,
     assetCode: invoice.assetCode,
     assetIssuer,
     memo,
+    memoType: toSep7MemoType(memoType),
   });
 
   return (
