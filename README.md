@@ -122,3 +122,66 @@ finance-os-web/
 ```
 
 Internal packages are consumed as TypeScript source (their `exports` point at `src/`), so there is no package build step.
+
+## Architecture
+
+### Data flow
+
+```mermaid
+flowchart LR
+  Screen["Screen (routes/*.tsx)"] --> Hook["Hook (api-client/hooks)"]
+  Hook --> Client["openapi-fetch client"]
+  Client -->|"Bearer token + X-Org-Id"| API[("Backend API<br/>or MSW mock")]
+  Hook --> Cache["TanStack Query cache"]
+  Screen --> QV["QueryView:<br/>loading · empty · error · denied"]
+```
+
+- Screens never call `fetch`. They use hooks from `@finance-os/api-client` (`useInvoices`, `useApprovePaymentRequest`, …),
+  which call the typed `openapi-fetch` client and throw `ApiError` (with `status`) on failure.
+- Mutations invalidate the right queries through the shared `keys` object, so lists and details stay in sync.
+- `QueryView` (`apps/dashboard/src/components/query-view.tsx`) renders the four required states: loading, empty, error
+  (with retry), permission denied (403), plus not found (404).
+
+### Auth and organizations
+
+- `auth/session-store.ts` keeps `{ token, orgId }` in `localStorage` (only the API token — never a Stellar key).
+- The API client sends `Authorization: Bearer <token>` and `X-Org-Id: <orgId>`; a 401 clears the session.
+- `AuthProvider` loads `/me` (user + memberships). The active membership's role drives the UI.
+- `RequireAuth` / `RedirectIfAuthenticated` guard routes and return users to the page they were heading to after login.
+- Switching org resets cached queries so data from the previous org never flashes on screen.
+
+### Role-based UI
+
+`auth/permissions.ts` maps `owner | admin | approver | accountant | viewer` to permissions such as `invoices:write`,
+`payments:submit` or `settings:manage`. Use `<Can permission="…">` or `usePermission()` to hide or disable controls.
+**This is UX only — the backend enforces permissions.** Per-record rights the server decides (e.g. whether _you_ may approve
+a request) come from the API as `canApprove` / `canSubmit`.
+
+### Outgoing payments (dashboard)
+
+```
+approved PaymentRequest → "Sign & send"
+  → POST /payment-requests/:id/build-tx      backend returns unsigned XDR + readable summary
+  → show summary (to, amount, memo, from, fee) — the user reads it before the wallet opens
+  → wallet.signTransaction(xdr, { expectedSigner: treasuryAddress })
+       blocks on network mismatch, or if the connected wallet isn't the paying treasury account
+  → POST /payment-requests/:id/submit { signedXdr }
+  → poll the request until settled | failed
+```
+
+Code: `features/payments/use-sign-and-send.ts`, `sign-and-send-panel.tsx`.
+
+### Paying an invoice (pay app)
+
+```
+"Connect wallet & pay"
+  → wallet connect → load payer account from Horizon → build payment to the invoice's muxed (M-) address
+  → show summary → payer signs → submit to Horizon
+  → page keeps polling GET /public/invoices/:token and flips to "Paid ✓" when the backend matches the payment
+```
+
+Or **pay from any wallet**: a SEP-7 `web+stellar:pay` QR code plus copyable address, memo and amount due, with the warning
+_"If you pay to the G-address, you must include this memo or your payment can't be matched."_
+
+Code: `apps/pay/src/components/use-wallet-payment.ts`, `connect-wallet-pay.tsx`, `pay-from-any-wallet.tsx`.
+stellar-sdk is loaded lazily (`lib/horizon.ts`) so the page stays light for first-time visitors on mobile.
