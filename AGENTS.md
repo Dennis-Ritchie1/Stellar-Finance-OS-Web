@@ -13,15 +13,15 @@ Read `README.md` first. These rules are non-negotiable.
 
 ## Where things go
 
-| Need | Location |
-|---|---|
+| Need                          | Location                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------ |
 | New shared component (shadcn) | `packages/ui/src/components/` — run `pnpm dlx shadcn@latest add <name>` from `packages/ui` |
-| Design tokens / dark mode | `packages/ui/src/styles/globals.css` |
-| API hooks | `packages/api-client/src/hooks/` |
-| Wallet connect / sign | `packages/wallet/src/` |
-| Money, dates, address display | `packages/utils/src/` |
-| Dashboard screen | `apps/dashboard/src/routes/` |
-| Pay page | `apps/pay/src/routes/` |
+| Design tokens / dark mode     | `packages/ui/src/styles/globals.css`                                                       |
+| API hooks                     | `packages/api-client/src/hooks/`                                                           |
+| Wallet connect / sign         | `packages/wallet/src/`                                                                     |
+| Money, dates, address display | `packages/utils/src/`                                                                      |
+| Dashboard screen              | `apps/dashboard/src/routes/`                                                               |
+| Pay page                      | `apps/pay/src/routes/`                                                                     |
 
 ## Role-based UI
 

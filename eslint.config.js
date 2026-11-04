@@ -15,8 +15,18 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       // Money rule: amounts are strings, never parse them as floats.
-      'no-restricted-globals': ['error', { name: 'parseFloat', message: 'Use money utils from @finance-os/utils.' }],
-      'no-restricted-properties': ['error', { object: 'Number', property: 'parseFloat', message: 'Use money utils from @finance-os/utils.' }],
+      'no-restricted-globals': [
+        'error',
+        { name: 'parseFloat', message: 'Use money utils from @finance-os/utils.' },
+      ],
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'Number',
+          property: 'parseFloat',
+          message: 'Use money utils from @finance-os/utils.',
+        },
+      ],
     },
   },
   {

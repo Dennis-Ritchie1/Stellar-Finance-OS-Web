@@ -35,39 +35,39 @@ finance-os-web/
 
 ## 2. Tech stack
 
-| Concern | Choice |
-|---|---|
-| Build | Vite + React + TypeScript (strict) |
-| Monorepo | pnpm workspaces + Turborepo |
-| Styling | Tailwind CSS + shadcn/ui |
-| Routing | React Router |
-| Server state | TanStack Query |
-| Forms | React Hook Form + Zod |
-| Tables | TanStack Table |
-| Charts | Recharts |
-| API client | `openapi-typescript` + `openapi-fetch`, generated from backend |
-| Wallets | `@creit.tech/stellar-wallets-kit` (Freighter, xBull, Lobstr, etc. — verify current supported list) |
-| QR codes | `qrcode.react` (SEP-7 payment URIs on the pay page) |
-| Tests | Vitest + React Testing Library; Playwright for E2E |
+| Concern      | Choice                                                                                             |
+| ------------ | -------------------------------------------------------------------------------------------------- |
+| Build        | Vite + React + TypeScript (strict)                                                                 |
+| Monorepo     | pnpm workspaces + Turborepo                                                                        |
+| Styling      | Tailwind CSS + shadcn/ui                                                                           |
+| Routing      | React Router                                                                                       |
+| Server state | TanStack Query                                                                                     |
+| Forms        | React Hook Form + Zod                                                                              |
+| Tables       | TanStack Table                                                                                     |
+| Charts       | Recharts                                                                                           |
+| API client   | `openapi-typescript` + `openapi-fetch`, generated from backend                                     |
+| Wallets      | `@creit.tech/stellar-wallets-kit` (Freighter, xBull, Lobstr, etc. — verify current supported list) |
+| QR codes     | `qrcode.react` (SEP-7 payment URIs on the pay page)                                                |
+| Tests        | Vitest + React Testing Library; Playwright for E2E                                                 |
 
 ---
 
 ## 3. Dashboard app — screens
 
-| Route | Screen | What it shows / does |
-|---|---|---|
-| `/login`, `/register` | Auth | Email/password; org creation on first sign-up |
-| `/` | Dashboard | Balances per treasury account, 30-day inflow/outflow chart, open & overdue invoices, pending approvals, unmatched payments count |
-| `/invoices` | Invoice list | Filter by status; quick actions (send, void, copy pay link) |
-| `/invoices/new`, `/invoices/:id` | Invoice editor/detail | Line items, asset, due date; payment reference (muxed address + memo); match history |
-| `/clients` | Clients | Client records; linked sender addresses |
-| `/vendors` | Vendors | Vendor records + Stellar payout address + required memo |
-| `/payments/outgoing` | Payment requests | Create request → approval status → sign & submit |
-| `/approvals` | Approval inbox | Requests awaiting *my* approval; approve/reject with comment |
-| `/transactions` | Transactions | All on-chain activity; filter unmatched; **manual match** drawer |
-| `/reports` | Treasury report | Date range inflows/outflows/balances |
-| `/exports` | Reconciliation | Generate & download CSV |
-| `/settings/*` | Settings | Org profile, members & roles, treasury accounts, approval policies, linked wallet |
+| Route                            | Screen                | What it shows / does                                                                                                             |
+| -------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `/login`, `/register`            | Auth                  | Email/password; org creation on first sign-up                                                                                    |
+| `/`                              | Dashboard             | Balances per treasury account, 30-day inflow/outflow chart, open & overdue invoices, pending approvals, unmatched payments count |
+| `/invoices`                      | Invoice list          | Filter by status; quick actions (send, void, copy pay link)                                                                      |
+| `/invoices/new`, `/invoices/:id` | Invoice editor/detail | Line items, asset, due date; payment reference (muxed address + memo); match history                                             |
+| `/clients`                       | Clients               | Client records; linked sender addresses                                                                                          |
+| `/vendors`                       | Vendors               | Vendor records + Stellar payout address + required memo                                                                          |
+| `/payments/outgoing`             | Payment requests      | Create request → approval status → sign & submit                                                                                 |
+| `/approvals`                     | Approval inbox        | Requests awaiting _my_ approval; approve/reject with comment                                                                     |
+| `/transactions`                  | Transactions          | All on-chain activity; filter unmatched; **manual match** drawer                                                                 |
+| `/reports`                       | Treasury report       | Date range inflows/outflows/balances                                                                                             |
+| `/exports`                       | Reconciliation        | Generate & download CSV                                                                                                          |
+| `/settings/*`                    | Settings              | Org profile, members & roles, treasury accounts, approval policies, linked wallet                                                |
 
 ### Role-based UI
 
@@ -82,11 +82,12 @@ Route: `/i/:publicToken`
 Shows: business name, invoice number, line items, amount + asset, due date, status.
 
 Payment options:
+
 1. **Connect wallet & pay** — builds the payment client-side to the invoice's muxed address (or G-address + memo), the payer signs, submits.
 2. **Pay from any wallet** — shows address, memo, amount, and a QR code (SEP-7 `web+stellar:pay` URI) with copy buttons.
 3. **Status** — polls the backend; flips to "Paid ✓" when the indexer matches the payment.
 
-Clear warning near the memo: *"If you pay to the G-address, you must include this memo or your payment can't be matched."*
+Clear warning near the memo: _"If you pay to the G-address, you must include this memo or your payment can't be matched."_
 
 Keep this app small and fast — it's opened by clients who've never heard of the product, often on mobile.
 
@@ -105,6 +106,7 @@ user clicks "Sign & send" on an approved PaymentRequest
 ```
 
 Rules:
+
 - Always show a readable summary before opening the wallet. Never ask users to sign something they can't read.
 - Network mismatch (wallet on mainnet, app on testnet) → block and explain.
 - The connected wallet must match the treasury account that's paying; if not, explain which address to switch to.
@@ -161,13 +163,13 @@ Until the backend is ready, use **MSW (Mock Service Worker)** with fixtures type
 
 ### Scripts
 
-| Command | What it does |
-|---|---|
-| `pnpm dev` | Run both apps |
-| `pnpm build` | Production build of both apps |
-| `pnpm lint` | ESLint across the workspace |
-| `pnpm typecheck` | `tsc --noEmit` in every package |
-| `pnpm test` | Vitest in every package |
+| Command             | What it does                                   |
+| ------------------- | ---------------------------------------------- |
+| `pnpm dev`          | Run both apps                                  |
+| `pnpm build`        | Production build of both apps                  |
+| `pnpm lint`         | ESLint across the workspace                    |
+| `pnpm typecheck`    | `tsc --noEmit` in every package                |
+| `pnpm test`         | Vitest in every package                        |
 | `pnpm api:generate` | Regenerate `packages/api-client/src/schema.ts` |
 
 ---
@@ -185,21 +187,21 @@ Until the backend is ready, use **MSW (Mock Service Worker)** with fixtures type
 
 ### Build order
 
-| # | Task | Done when |
-|---|---|---|
-| 1 | Scaffold monorepo: pnpm, turbo, Vite apps, Tailwind preset, shadcn/ui in `packages/ui` | Both apps run with a shared Button |
-| 2 | `packages/api-client` generation + MSW mocks | Typed hooks return mock data |
-| 3 | App shell: auth pages, sidebar layout, org switcher, route guards | Login → dashboard with mocks |
-| 4 | `packages/wallet` (connect, network check, sign) | Freighter signs a testnet tx |
-| 5 | Clients + invoices (list, editor, detail with payment reference) | Create & send invoice end-to-end |
-| 6 | Pay app (`/i/:token`) with wallet pay + QR + status polling | Testnet payment flips invoice to Paid |
-| 7 | Vendors + payment requests + approval inbox | Request → 2 approvals → approved |
-| 8 | Sign & submit outgoing payment | Settled status shown after indexer picks it up |
-| 9 | Transactions page + manual match drawer | Unmatched payment can be linked to an invoice |
-| 10 | Dashboard widgets + reports charts | Numbers match API |
-| 11 | Exports page | CSV downloads |
-| 12 | Settings: members, roles, treasury accounts, approval policies | Role changes reflect in UI |
-| 13 | Playwright E2E for invoice-to-paid and request-to-settled | Green in CI |
+| #   | Task                                                                                   | Done when                                      |
+| --- | -------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| 1   | Scaffold monorepo: pnpm, turbo, Vite apps, Tailwind preset, shadcn/ui in `packages/ui` | Both apps run with a shared Button             |
+| 2   | `packages/api-client` generation + MSW mocks                                           | Typed hooks return mock data                   |
+| 3   | App shell: auth pages, sidebar layout, org switcher, route guards                      | Login → dashboard with mocks                   |
+| 4   | `packages/wallet` (connect, network check, sign)                                       | Freighter signs a testnet tx                   |
+| 5   | Clients + invoices (list, editor, detail with payment reference)                       | Create & send invoice end-to-end               |
+| 6   | Pay app (`/i/:token`) with wallet pay + QR + status polling                            | Testnet payment flips invoice to Paid          |
+| 7   | Vendors + payment requests + approval inbox                                            | Request → 2 approvals → approved               |
+| 8   | Sign & submit outgoing payment                                                         | Settled status shown after indexer picks it up |
+| 9   | Transactions page + manual match drawer                                                | Unmatched payment can be linked to an invoice  |
+| 10  | Dashboard widgets + reports charts                                                     | Numbers match API                              |
+| 11  | Exports page                                                                           | CSV downloads                                  |
+| 12  | Settings: members, roles, treasury accounts, approval policies                         | Role changes reflect in UI                     |
+| 13  | Playwright E2E for invoice-to-paid and request-to-settled                              | Green in CI                                    |
 
 ### Prompt template
 
