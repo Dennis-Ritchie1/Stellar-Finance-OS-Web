@@ -1,0 +1,40 @@
+import Big from 'big.js';
+
+export interface FormatAmountOptions {
+  /** Fixed number of decimal places to display. Defaults to 2. */
+  decimals?: number;
+  /** BCP-47 locale for grouping/decimal separators. Defaults to the user's locale. */
+  locale?: string;
+}
+
+function separators(locale?: string): { group: string; decimal: string } {
+  const parts = new Intl.NumberFormat(locale).formatToParts(1000000.5);
+  return {
+    group: parts.find((p) => p.type === 'group')?.value ?? ',',
+    decimal: parts.find((p) => p.type === 'decimal')?.value ?? '.',
+  };
+}
+
+/**
+ * Format a decimal string amount without converting it to a float.
+ * `formatDecimal("5000")` → `"5,000.00"`.
+ */
+export function formatDecimal(amount: string, options: FormatAmountOptions = {}): string {
+  const { decimals = 2, locale } = options;
+  const fixed = new Big(amount).toFixed(decimals, Big.roundHalfUp);
+  const negative = fixed.startsWith('-');
+  const [int = '0', frac] = (negative ? fixed.slice(1) : fixed).split('.');
+  const { group, decimal } = separators(locale);
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, group);
+  return `${negative ? '-' : ''}${grouped}${frac ? decimal + frac : ''}`;
+}
+
+/** `formatAmount("5000", "USDC")` → `"5,000.00 USDC"`. Always shows the asset code. */
+export function formatAmount(amount: string, assetCode: string, options?: FormatAmountOptions): string {
+  return `${formatDecimal(amount, options)} ${assetCode}`;
+}
+
+/** Validate that a string is a non-negative decimal with at most 7 places (Stellar precision). */
+export function isValidAmount(amount: string): boolean {
+  return /^\d+(\.\d{1,7})?$/.test(amount.trim()) && new Big(amount.trim()).gt(0);
+}
