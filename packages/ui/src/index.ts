@@ -29,3 +29,13 @@ export {
   DialogTitle,
   DialogDescription,
 } from './components/dialog';
+export {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+} from './components/sheet';
