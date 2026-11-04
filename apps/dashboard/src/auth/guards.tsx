@@ -13,10 +13,14 @@ export function RequireAuth() {
   return <Outlet />;
 }
 
-/** Keeps signed-in users away from /login and /register. */
+/** Keeps signed-in users away from /login and /register (sending them where they were headed). */
 export function RedirectIfAuthenticated() {
   const { status } = useAuth();
+  const location = useLocation();
   if (status === 'loading') return <Spinner className="min-h-svh" label="Loading your account" />;
-  if (status === 'authenticated') return <Navigate to="/" replace />;
+  if (status === 'authenticated') {
+    const from = (location.state as { from?: string } | null)?.from ?? '/';
+    return <Navigate to={from} replace />;
+  }
   return <Outlet />;
 }
