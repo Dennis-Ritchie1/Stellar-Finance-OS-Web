@@ -326,6 +326,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/payment-requests/{id}/build-tx": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["buildPaymentTransaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/payment-requests/{id}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["submitPaymentTransaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -545,6 +581,24 @@ export interface components {
         };
         DecisionInput: {
             comment?: string;
+        };
+        TxSummary: {
+            from: string;
+            to: string;
+            assetCode: string;
+            /** @description Decimal string, never a float */
+            amount: string;
+            memo?: string;
+            /** @description Decimal string, never a float */
+            fee: string;
+        };
+        BuiltTransaction: {
+            xdr: string;
+            networkPassphrase: string;
+            summary: components["schemas"]["TxSummary"];
+        };
+        SubmitInput: {
+            signedXdr: string;
         };
     };
     responses: never;
@@ -1359,6 +1413,72 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["DecisionInput"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequest"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    buildPaymentTransaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BuiltTransaction"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    submitPaymentTransaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitInput"];
             };
         };
         responses: {

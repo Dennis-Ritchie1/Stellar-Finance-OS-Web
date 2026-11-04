@@ -955,6 +955,90 @@
           }
         }
       }
+    },
+    "/payment-requests/{id}/build-tx": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "operationId": "buildPaymentTransaction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuiltTransaction"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payment-requests/{id}/submit": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "operationId": "submitPaymentTransaction",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequest"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1625,6 +1709,56 @@
           }
         },
         "required": []
+      },
+      "TxSummary": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "memo": {
+            "type": "string"
+          },
+          "fee": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          }
+        },
+        "required": ["from", "to", "assetCode", "amount", "fee"]
+      },
+      "BuiltTransaction": {
+        "type": "object",
+        "properties": {
+          "xdr": {
+            "type": "string"
+          },
+          "networkPassphrase": {
+            "type": "string"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/TxSummary"
+          }
+        },
+        "required": ["xdr", "networkPassphrase", "summary"]
+      },
+      "SubmitInput": {
+        "type": "object",
+        "properties": {
+          "signedXdr": {
+            "type": "string"
+          }
+        },
+        "required": ["signedXdr"]
       }
     }
   }
