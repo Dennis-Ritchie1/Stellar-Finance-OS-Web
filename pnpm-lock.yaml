@@ -346,6 +346,9 @@ importers:
         specifier: ^0.17.0
         version: 0.17.0
     devDependencies:
+      '@stellar/stellar-sdk':
+        specifier: ^17.4.0
+        version: 17.4.0(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)
       '@tanstack/react-query':
         specifier: ^5.105.3
         version: 5.105.3(@types/react@19.3.0)(react@19.3.1)
