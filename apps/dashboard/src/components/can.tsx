@@ -15,8 +15,3 @@ export function Can({
   const { role } = useAuth();
   return <>{can(role, permission) ? children : fallback}</>;
 }
-
-export function usePermission(permission: Permission) {
-  const { role } = useAuth();
-  return can(role, permission);
-}
