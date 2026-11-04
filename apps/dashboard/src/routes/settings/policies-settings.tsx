@@ -56,7 +56,12 @@ function NewPolicyForm() {
                 requiredApprovals: Number(requiredApprovals),
                 approverRoles: APPROVER_ROLES,
               },
-              { onSuccess: () => (setName(''), setMinAmount('')) },
+              {
+                onSuccess: () => {
+                  setName('');
+                  setMinAmount('');
+                },
+              },
             );
           }}
         >
