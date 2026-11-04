@@ -27,10 +27,18 @@ export function InvoicesPage() {
           icon={<AlertTriangle />}
           title="Couldn't load invoices"
           description="Check your connection and try again."
-          action={<Button variant="outline" onClick={() => refetch()}>Try again</Button>}
+          action={
+            <Button variant="outline" onClick={() => refetch()}>
+              Try again
+            </Button>
+          }
         />
       ) : data.length === 0 ? (
-        <EmptyState icon={<FileText />} title="No invoices yet" description="Create your first invoice to get paid." />
+        <EmptyState
+          icon={<FileText />}
+          title="No invoices yet"
+          description="Create your first invoice to get paid."
+        />
       ) : (
         <div className="overflow-x-auto rounded-xl border">
           <table className="w-full text-sm">
@@ -56,7 +64,9 @@ export function InvoicesPage() {
                   <td className="px-4 py-3">
                     <StatusBadge status={invoice.status} />
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums">{formatAmount(invoice.amount, invoice.assetCode)}</td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    {formatAmount(invoice.amount, invoice.assetCode)}
+                  </td>
                 </tr>
               ))}
             </tbody>

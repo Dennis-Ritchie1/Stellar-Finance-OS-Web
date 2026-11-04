@@ -17,7 +17,10 @@ describe('dashboard routes', () => {
   it('renders the home screen inside the sidebar layout', async () => {
     renderAt('/');
     expect(await screen.findByRole('heading', { name: 'Dashboard' })).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: /new invoice/i })[0]).toHaveAttribute('href', '/invoices/new');
+    expect(screen.getAllByRole('link', { name: /new invoice/i })[0]).toHaveAttribute(
+      'href',
+      '/invoices/new',
+    );
   });
 
   it('renders auth pages without the sidebar', async () => {

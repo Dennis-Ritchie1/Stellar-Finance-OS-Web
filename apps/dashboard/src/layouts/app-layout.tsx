@@ -35,7 +35,10 @@ export function AppLayout() {
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                cn('whitespace-nowrap rounded-md px-3 py-1.5 text-sm', isActive ? 'bg-accent font-medium' : 'text-muted-foreground')
+                cn(
+                  'whitespace-nowrap rounded-md px-3 py-1.5 text-sm',
+                  isActive ? 'bg-accent font-medium' : 'text-muted-foreground',
+                )
               }
             >
               {label}
