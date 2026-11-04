@@ -396,6 +396,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/dashboard/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getDashboardSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -656,6 +672,29 @@ export interface components {
         };
         MatchInput: {
             invoiceId: string;
+        };
+        CashflowPoint: {
+            /** Format: date */
+            date: string;
+            /** @description Decimal string, never a float */
+            inflow: string;
+            /** @description Decimal string, never a float */
+            outflow: string;
+        };
+        InvoiceTotals: {
+            count: number;
+            /** @description Decimal string, never a float */
+            amount: string;
+            assetCode: string;
+        };
+        DashboardSummary: {
+            treasuryAccounts: components["schemas"]["TreasuryAccount"][];
+            cashflow: components["schemas"]["CashflowPoint"][];
+            cashflowAssetCode: string;
+            openInvoices: components["schemas"]["InvoiceTotals"];
+            overdueInvoices: components["schemas"]["InvoiceTotals"];
+            pendingApprovals: number;
+            unmatchedPayments: number;
         };
     };
     responses: never;
@@ -1614,6 +1653,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Transaction"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getDashboardSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardSummary"];
                 };
             };
             /** @description Error */

@@ -1132,6 +1132,33 @@
           }
         }
       }
+    },
+    "/dashboard/summary": {
+      "get": {
+        "operationId": "getDashboardSummary",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardSummary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1923,6 +1950,81 @@
           }
         },
         "required": ["invoiceId"]
+      },
+      "CashflowPoint": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "inflow": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "outflow": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          }
+        },
+        "required": ["date", "inflow", "outflow"]
+      },
+      "InvoiceTotals": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "assetCode": {
+            "type": "string"
+          }
+        },
+        "required": ["count", "amount", "assetCode"]
+      },
+      "DashboardSummary": {
+        "type": "object",
+        "properties": {
+          "treasuryAccounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TreasuryAccount"
+            }
+          },
+          "cashflow": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CashflowPoint"
+            }
+          },
+          "cashflowAssetCode": {
+            "type": "string"
+          },
+          "openInvoices": {
+            "$ref": "#/components/schemas/InvoiceTotals"
+          },
+          "overdueInvoices": {
+            "$ref": "#/components/schemas/InvoiceTotals"
+          },
+          "pendingApprovals": {
+            "type": "integer"
+          },
+          "unmatchedPayments": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "treasuryAccounts",
+          "cashflow",
+          "cashflowAssetCode",
+          "openInvoices",
+          "overdueInvoices",
+          "pendingApprovals",
+          "unmatchedPayments"
+        ]
       }
     }
   }
