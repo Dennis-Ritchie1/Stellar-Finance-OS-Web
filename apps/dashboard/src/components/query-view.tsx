@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import type { UseQueryResult } from '@tanstack/react-query';
-import { isForbidden } from '@finance-os/api-client';
+import { ApiError, isForbidden } from '@finance-os/api-client';
 import { Button, EmptyState, Spinner } from '@finance-os/ui';
-import { AlertTriangle, Lock } from 'lucide-react';
+import { AlertTriangle, Lock, SearchX } from 'lucide-react';
 
 export interface QueryViewProps<T> {
   query: UseQueryResult<T>;
@@ -36,6 +36,15 @@ export function QueryView<T>({
           icon={<Lock />}
           title="You don't have access"
           description={`Your role can't view ${resource}. Ask an owner or admin if you need access.`}
+        />
+      );
+    }
+    if (query.error instanceof ApiError && query.error.isNotFound) {
+      return (
+        <EmptyState
+          icon={<SearchX />}
+          title={`We couldn't find ${resource}`}
+          description="It may have been removed, or the link is wrong."
         />
       );
     }
