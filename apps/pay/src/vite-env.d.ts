@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_STELLAR_NETWORK: string;
   readonly VITE_EXPLORER_URL: string;
   readonly VITE_PAY_APP_URL: string;
+  readonly VITE_ENABLE_MOCKS?: string;
 }
 
 interface ImportMeta {
