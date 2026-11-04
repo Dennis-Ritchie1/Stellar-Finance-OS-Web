@@ -1,0 +1,58 @@
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
+import { createWalletClient, type WalletClient } from './kit';
+import { checkSigner, type StellarNetwork } from './network';
+import { WalletCheckError, WalletContext, type WalletState } from './wallet-context';
+
+export interface WalletProviderProps {
+  network: StellarNetwork;
+  /** Inject a client in tests; defaults to Stellar Wallets Kit. */
+  client?: WalletClient;
+  children: ReactNode;
+}
+
+export function WalletProvider({ network, client, children }: WalletProviderProps) {
+  const [wallet] = useState(() => client ?? createWalletClient(network));
+  const [address, setAddress] = useState<string | null>(null);
+  const [status, setStatus] = useState<WalletState['status']>('disconnected');
+
+  const connect = useCallback(async () => {
+    setStatus('connecting');
+    try {
+      const { address: connected } = await wallet.connect();
+      setAddress(connected);
+      setStatus('connected');
+      return connected;
+    } catch (e) {
+      setStatus(address ? 'connected' : 'disconnected');
+      throw e;
+    }
+  }, [wallet, address]);
+
+  const disconnect = useCallback(async () => {
+    await wallet.disconnect();
+    setAddress(null);
+    setStatus('disconnected');
+  }, [wallet]);
+
+  const signTransaction = useCallback<WalletState['signTransaction']>(
+    async (xdr, options = {}) => {
+      if (!address) throw new WalletCheckError('Connect your wallet first.', 'not-connected');
+      const networkCheck = await wallet.checkNetwork();
+      if (!networkCheck.ok) throw new WalletCheckError(networkCheck.message, 'network-mismatch');
+      if (options.expectedSigner) {
+        const signerCheck = checkSigner(options.expectedSigner, address);
+        if (!signerCheck.ok) throw new WalletCheckError(signerCheck.message, 'wrong-account');
+      }
+      const { signedXdr } = await wallet.signTransaction(xdr, { address });
+      return signedXdr;
+    },
+    [wallet, address],
+  );
+
+  const value = useMemo<WalletState>(
+    () => ({ network, address, status, connect, disconnect, signTransaction }),
+    [network, address, status, connect, disconnect, signTransaction],
+  );
+
+  return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;
+}
