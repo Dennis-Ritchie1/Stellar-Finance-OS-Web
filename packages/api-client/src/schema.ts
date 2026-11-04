@@ -239,6 +239,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/payment-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listPaymentRequests"];
+        put?: never;
+        post: operations["createPaymentRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/payment-requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        get: operations["getPaymentRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -410,6 +444,51 @@ export interface components {
         TreasuryAccountInput: {
             name: string;
             address: string;
+        };
+        /** @enum {string} */
+        PaymentRequestStatus: "pending_approval" | "approved" | "rejected" | "submitted" | "settled" | "failed";
+        ApprovalDecision: {
+            userId: string;
+            userName: string;
+            /** @enum {string} */
+            decision: "approved" | "rejected";
+            comment?: string;
+            /** Format: date-time */
+            decidedAt: string;
+        };
+        PaymentRequest: {
+            id: string;
+            status: components["schemas"]["PaymentRequestStatus"];
+            vendorId: string;
+            vendorName: string;
+            destination: string;
+            /** @description Decimal string, never a float */
+            amount: string;
+            assetCode: string;
+            memo?: string;
+            memoType?: components["schemas"]["MemoType"];
+            description?: string;
+            treasuryAccountId: string;
+            treasuryAddress: string;
+            requiredApprovals: number;
+            approvals: components["schemas"]["ApprovalDecision"][];
+            createdByName: string;
+            /** Format: date-time */
+            createdAt: string;
+            txHash?: string;
+            failureReason?: string;
+            /** @description Whether the current user may approve/reject (API decides) */
+            canApprove: boolean;
+            /** @description Whether the current user may sign & submit (API decides) */
+            canSubmit: boolean;
+        };
+        PaymentRequestInput: {
+            vendorId: string;
+            /** @description Decimal string, never a float */
+            amount: string;
+            assetCode: string;
+            treasuryAccountId: string;
+            description?: string;
         };
     };
     responses: never;
@@ -1036,6 +1115,103 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TreasuryAccount"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listPaymentRequests: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["PaymentRequestStatus"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PaymentRequest"][];
+                    };
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createPaymentRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PaymentRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequest"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPaymentRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentRequest"];
                 };
             };
             /** @description Error */

@@ -706,6 +706,124 @@
           }
         }
       }
+    },
+    "/payment-requests": {
+      "get": {
+        "operationId": "listPaymentRequests",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/PaymentRequestStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PaymentRequest"
+                      }
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createPaymentRequest",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequestInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequest"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payment-requests/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getPaymentRequest",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequest"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1229,6 +1347,144 @@
           }
         },
         "required": ["name", "address"]
+      },
+      "PaymentRequestStatus": {
+        "type": "string",
+        "enum": ["pending_approval", "approved", "rejected", "submitted", "settled", "failed"]
+      },
+      "ApprovalDecision": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string",
+            "enum": ["approved", "rejected"]
+          },
+          "comment": {
+            "type": "string"
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["userId", "userName", "decision", "decidedAt"]
+      },
+      "PaymentRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentRequestStatus"
+          },
+          "vendorId": {
+            "type": "string"
+          },
+          "vendorName": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          },
+          "memoType": {
+            "$ref": "#/components/schemas/MemoType"
+          },
+          "description": {
+            "type": "string"
+          },
+          "treasuryAccountId": {
+            "type": "string"
+          },
+          "treasuryAddress": {
+            "type": "string"
+          },
+          "requiredApprovals": {
+            "type": "integer"
+          },
+          "approvals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalDecision"
+            }
+          },
+          "createdByName": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "txHash": {
+            "type": "string"
+          },
+          "failureReason": {
+            "type": "string"
+          },
+          "canApprove": {
+            "type": "boolean",
+            "description": "Whether the current user may approve/reject (API decides)"
+          },
+          "canSubmit": {
+            "type": "boolean",
+            "description": "Whether the current user may sign & submit (API decides)"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "vendorId",
+          "vendorName",
+          "destination",
+          "amount",
+          "assetCode",
+          "treasuryAccountId",
+          "treasuryAddress",
+          "requiredApprovals",
+          "approvals",
+          "createdByName",
+          "createdAt",
+          "canApprove",
+          "canSubmit"
+        ]
+      },
+      "PaymentRequestInput": {
+        "type": "object",
+        "properties": {
+          "vendorId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "treasuryAccountId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": ["vendorId", "amount", "assetCode", "treasuryAccountId"]
       }
     }
   }
