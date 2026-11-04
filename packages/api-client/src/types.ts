@@ -1,0 +1,45 @@
+// Friendly aliases for generated schema types. Never edit schema.ts — regenerate it.
+import type { components } from './schema';
+
+type Schemas = components['schemas'];
+
+export type Role = Schemas['Role'];
+export type User = Schemas['User'];
+export type Membership = Schemas['Membership'];
+export type Me = Schemas['Me'];
+export type Session = Schemas['Session'];
+export type LoginInput = Schemas['LoginInput'];
+export type RegisterInput = Schemas['RegisterInput'];
+export type Client = Schemas['Client'];
+export type ClientInput = Schemas['ClientInput'];
+export type MemoType = Schemas['MemoType'];
+export type LineItem = Schemas['LineItem'];
+export type LineItemInput = Schemas['LineItemInput'];
+export type PaymentReference = Schemas['PaymentReference'];
+export type InvoiceStatus = Schemas['InvoiceStatus'];
+export type Invoice = Schemas['Invoice'];
+export type InvoiceDetail = Schemas['InvoiceDetail'];
+export type InvoiceMatch = Schemas['InvoiceMatch'];
+export type InvoiceInput = Schemas['InvoiceInput'];
+export type PublicInvoice = Schemas['PublicInvoice'];
+export type Vendor = Schemas['Vendor'];
+export type VendorInput = Schemas['VendorInput'];
+export type Balance = Schemas['Balance'];
+export type TreasuryAccount = Schemas['TreasuryAccount'];
+export type TreasuryAccountInput = Schemas['TreasuryAccountInput'];
+export type PaymentRequestStatus = Schemas['PaymentRequestStatus'];
+export type PaymentRequest = Schemas['PaymentRequest'];
+export type PaymentRequestInput = Schemas['PaymentRequestInput'];
+export type ApprovalDecision = Schemas['ApprovalDecision'];
+export type BuiltTransaction = Schemas['BuiltTransaction'];
+export type TxSummary = Schemas['TxSummary'];
+export type MatchStatus = Schemas['MatchStatus'];
+export type Transaction = Schemas['Transaction'];
+export type CashflowPoint = Schemas['CashflowPoint'];
+export type DashboardSummary = Schemas['DashboardSummary'];
+export type TreasuryReport = Schemas['TreasuryReport'];
+export type Org = Schemas['Org'];
+export type OrgInput = Schemas['OrgInput'];
+export type Member = Schemas['Member'];
+export type ApprovalPolicy = Schemas['ApprovalPolicy'];
+export type ApprovalPolicyInput = Schemas['ApprovalPolicyInput'];
