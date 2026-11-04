@@ -1,0 +1,40 @@
+{
+  "name": "@finance-os/dashboard",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5173 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 5173",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@finance-os/api-client": "workspace:*",
+    "@finance-os/ui": "workspace:*",
+    "@finance-os/utils": "workspace:*",
+    "@finance-os/wallet": "workspace:*",
+    "@hookform/resolvers": "^7.0.2",
+    "@tanstack/react-query": "^5.105.3",
+    "@tanstack/react-table": "^9.3.1",
+    "lucide-react": "^1.67.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.91.0",
+    "react-router": "^8.5.1",
+    "recharts": "^3.10.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.4",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "tailwindcss": "^4.3.4"
+  }
+}
