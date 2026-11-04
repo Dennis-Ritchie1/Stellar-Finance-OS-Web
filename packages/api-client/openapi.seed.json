@@ -1039,6 +1039,99 @@
           }
         }
       }
+    },
+    "/transactions": {
+      "get": {
+        "operationId": "listTransactions",
+        "parameters": [
+          {
+            "name": "matchStatus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/MatchStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transaction"
+                      }
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions/{id}/match": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "operationId": "matchTransaction",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatchInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1759,6 +1852,77 @@
           }
         },
         "required": ["signedXdr"]
+      },
+      "MatchStatus": {
+        "type": "string",
+        "enum": ["matched", "unmatched"]
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "txHash": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["incoming", "outgoing"]
+          },
+          "amount": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "matchStatus": {
+            "$ref": "#/components/schemas/MatchStatus"
+          },
+          "invoiceId": {
+            "type": "string"
+          },
+          "invoiceNumber": {
+            "type": "string"
+          },
+          "paymentRequestId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "txHash",
+          "direction",
+          "amount",
+          "assetCode",
+          "from",
+          "to",
+          "createdAt",
+          "matchStatus"
+        ]
+      },
+      "MatchInput": {
+        "type": "object",
+        "properties": {
+          "invoiceId": {
+            "type": "string"
+          }
+        },
+        "required": ["invoiceId"]
       }
     }
   }
