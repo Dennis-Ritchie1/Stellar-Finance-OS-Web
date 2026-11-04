@@ -19,3 +19,13 @@ export { Textarea } from './components/textarea';
 export { NativeSelect } from './components/native-select';
 export { Field, type FieldProps } from './components/field';
 export { Alert, AlertTitle, AlertDescription } from './components/alert';
+export {
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from './components/dialog';
