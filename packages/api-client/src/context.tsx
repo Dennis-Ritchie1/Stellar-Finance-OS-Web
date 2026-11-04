@@ -3,7 +3,13 @@ import type { ApiClient } from './client';
 
 const ApiClientContext = createContext<ApiClient | null>(null);
 
-export function ApiClientProvider({ client, children }: { client: ApiClient; children: ReactNode }) {
+export function ApiClientProvider({
+  client,
+  children,
+}: {
+  client: ApiClient;
+  children: ReactNode;
+}) {
   return <ApiClientContext.Provider value={client}>{children}</ApiClientContext.Provider>;
 }
 

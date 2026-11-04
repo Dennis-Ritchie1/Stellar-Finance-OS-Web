@@ -24,7 +24,11 @@ let source;
 if (process.argv.includes('--seed')) {
   source = resolve(pkgDir, 'openapi.seed.json');
 } else {
-  const apiUrl = process.env.API_URL ?? process.env.VITE_API_URL ?? readRootEnv('VITE_API_URL') ?? 'http://localhost:3000/v1';
+  const apiUrl =
+    process.env.API_URL ??
+    process.env.VITE_API_URL ??
+    readRootEnv('VITE_API_URL') ??
+    'http://localhost:3000/v1';
   source = `${apiUrl.replace(/\/+$/, '')}/openapi.json`;
 }
 

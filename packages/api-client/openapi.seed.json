@@ -10,7 +10,12 @@
       "get": {
         "operationId": "listInvoices",
         "parameters": [
-          { "name": "status", "in": "query", "required": false, "schema": { "$ref": "#/components/schemas/InvoiceStatus" } }
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": { "$ref": "#/components/schemas/InvoiceStatus" }
+          }
         ],
         "responses": {
           "200": {
@@ -20,7 +25,9 @@
                 "schema": {
                   "type": "object",
                   "required": ["data"],
-                  "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/Invoice" } } }
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Invoice" } }
+                  }
                 }
               }
             }
@@ -31,11 +38,15 @@
     "/public/invoices/{publicToken}": {
       "get": {
         "operationId": "getPublicInvoice",
-        "parameters": [{ "name": "publicToken", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "parameters": [
+          { "name": "publicToken", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
         "responses": {
           "200": {
             "description": "Public view of an invoice for the pay page",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PublicInvoice" } } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/PublicInvoice" } }
+            }
           },
           "404": { "description": "Not found" }
         }
@@ -44,7 +55,10 @@
   },
   "components": {
     "schemas": {
-      "InvoiceStatus": { "type": "string", "enum": ["draft", "sent", "partially_paid", "paid", "overdue", "void"] },
+      "InvoiceStatus": {
+        "type": "string",
+        "enum": ["draft", "sent", "partially_paid", "paid", "overdue", "void"]
+      },
       "Invoice": {
         "type": "object",
         "required": ["id", "number", "status", "amount", "assetCode", "dueDate", "clientName"],
@@ -60,7 +74,16 @@
       },
       "PublicInvoice": {
         "type": "object",
-        "required": ["businessName", "number", "status", "amount", "assetCode", "dueDate", "lineItems", "payment"],
+        "required": [
+          "businessName",
+          "number",
+          "status",
+          "amount",
+          "assetCode",
+          "dueDate",
+          "lineItems",
+          "payment"
+        ],
         "properties": {
           "businessName": { "type": "string" },
           "number": { "type": "string" },
