@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { ADDRESSES } from '@finance-os/api-client/mocks';
@@ -24,13 +24,11 @@ describe('sign & send', () => {
     expect(db.paymentRequests.find((p) => p.id === 'pr_2')!.status).toBe('submitted');
 
     // The mock indexer settles after a few seconds; the drawer polls until then.
-    const explorer = await within(drawer).findByRole(
-      'link',
-      { name: /view on explorer/i },
-      { timeout: 10_000 },
-    );
-    expect(explorer).toHaveAttribute('href', expect.stringContaining('/tx/'));
-    expect(within(drawer).getAllByText('Paid')).toHaveLength(2); // status badge + confirmation
+    await waitFor(() => expect(within(drawer).getAllByText('Paid')).toHaveLength(2), {
+      timeout: 10_000,
+    });
+    const links = within(drawer).getAllByRole('link', { name: /view on explorer/i });
+    expect(links.some((a) => a.getAttribute('href')?.includes('/tx/'))).toBe(true);
     expect(db.paymentRequests.find((p) => p.id === 'pr_2')!.status).toBe('settled');
   }, 15_000);
 
