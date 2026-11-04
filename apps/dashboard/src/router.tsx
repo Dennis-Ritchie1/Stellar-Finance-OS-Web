@@ -7,7 +7,7 @@ import { ClientsPage } from './routes/clients';
 import { ExportsPage } from './routes/exports';
 import { HomePage } from './routes/home';
 import { InvoiceDetailPage } from './routes/invoice-detail';
-import { InvoiceEditorPage } from './routes/invoice-editor';
+import { InvoiceEditorPage, InvoiceEditPage } from './routes/invoice-editor';
 import { InvoicesPage } from './routes/invoices';
 import { LoginPage } from './routes/login';
 import { NotFoundPage } from './routes/not-found';
@@ -41,6 +41,7 @@ export const routes: RouteObject[] = [
           { path: 'invoices', element: <InvoicesPage /> },
           { path: 'invoices/new', element: <InvoiceEditorPage /> },
           { path: 'invoices/:id', element: <InvoiceDetailPage /> },
+          { path: 'invoices/:id/edit', element: <InvoiceEditPage /> },
           { path: 'clients', element: <ClientsPage /> },
           { path: 'vendors', element: <VendorsPage /> },
           { path: 'payments/outgoing', element: <OutgoingPaymentsPage /> },
