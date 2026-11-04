@@ -54,7 +54,7 @@ export function PayInvoicePage() {
         />
       ) : (
         <>
-          <ConnectWalletPay />
+          <ConnectWalletPay invoice={invoice} />
           <PayFromAnyWallet invoice={invoice} />
         </>
       )}
