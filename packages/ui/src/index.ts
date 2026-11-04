@@ -17,3 +17,4 @@ export { Input } from './components/input';
 export { Label } from './components/label';
 export { Textarea } from './components/textarea';
 export { NativeSelect } from './components/native-select';
+export { Field, type FieldProps } from './components/field';
