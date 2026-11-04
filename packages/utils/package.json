@@ -1,0 +1,20 @@
+{
+  "name": "@finance-os/utils",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "big.js": "^7.0.1"
+  },
+  "devDependencies": {
+    "@types/big.js": "^7.0.0"
+  }
+}
