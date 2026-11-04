@@ -14,6 +14,7 @@ import { formatDate } from '@finance-os/utils';
 import { QueryView } from '../../components/query-view';
 import { env } from '../../env';
 import { ApprovalTimeline } from './approval-timeline';
+import { SignAndSendPanel } from './sign-and-send-panel';
 
 /** Payment request details: summary, approvals and (when approved) sign & send. */
 export function PaymentRequestSheet({ id, onClose }: { id: string | null; onClose: () => void }) {
@@ -69,6 +70,7 @@ export function PaymentRequestSheet({ id, onClose }: { id: string | null; onClos
                     ...(request.description ? [{ label: 'For', value: request.description }] : []),
                   ]}
                 />
+                <SignAndSendPanel request={request} />
                 <ApprovalTimeline request={request} />
               </div>
             )}
