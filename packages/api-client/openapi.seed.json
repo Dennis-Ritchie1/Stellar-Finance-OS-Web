@@ -1253,6 +1253,68 @@
           }
         }
       }
+    },
+    "/org": {
+      "get": {
+        "operationId": "getOrg",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Org"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateOrg",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrgInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Org"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2189,6 +2251,45 @@
           "closingBalance",
           "series"
         ]
+      },
+      "Org": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "legalName": {
+            "type": "string"
+          },
+          "defaultAssetCode": {
+            "type": "string"
+          },
+          "linkedWalletAddress": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "name", "defaultAssetCode"]
+      },
+      "OrgInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "legalName": {
+            "type": "string"
+          },
+          "defaultAssetCode": {
+            "type": "string"
+          },
+          "linkedWalletAddress": {
+            "type": "string"
+          }
+        },
+        "required": []
       }
     }
   }
