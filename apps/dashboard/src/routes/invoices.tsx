@@ -1,11 +1,16 @@
-import { Link } from 'react-router';
-import { useInvoices } from '@finance-os/api-client';
-import { Button, EmptyState, PageHeader, Spinner, StatusBadge } from '@finance-os/ui';
-import { formatAmount, formatDate } from '@finance-os/utils';
-import { AlertTriangle, FileText, Plus } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router';
+import { useInvoices, type InvoiceStatus } from '@finance-os/api-client';
+import { Button, DataTable, EmptyState, PageHeader } from '@finance-os/ui';
+import { FileText, Plus } from 'lucide-react';
+import { Can } from '../components/can';
+import { QueryView } from '../components/query-view';
+import { invoiceColumns } from '../features/invoices/invoice-columns';
+import { StatusFilter } from '../features/invoices/status-filter';
 
 export function InvoicesPage() {
-  const { data, isPending, isError, refetch } = useInvoices();
+  const [params, setParams] = useSearchParams();
+  const status = (params.get('status') as InvoiceStatus | null) ?? undefined;
+  const query = useInvoices(status);
 
   return (
     <>
@@ -13,66 +18,40 @@ export function InvoicesPage() {
         title="Invoices"
         description="Bill clients and get paid in USDC."
         actions={
-          <Button asChild>
-            <Link to="/invoices/new">
-              <Plus /> New invoice
-            </Link>
-          </Button>
+          <Can permission="invoices:write">
+            <Button asChild>
+              <Link to="/invoices/new">
+                <Plus /> New invoice
+              </Link>
+            </Button>
+          </Can>
         }
       />
-      {isPending ? (
-        <Spinner label="Loading invoices" />
-      ) : isError ? (
-        <EmptyState
-          icon={<AlertTriangle />}
-          title="Couldn't load invoices"
-          description="Check your connection and try again."
-          action={
-            <Button variant="outline" onClick={() => refetch()}>
-              Try again
-            </Button>
-          }
-        />
-      ) : data.length === 0 ? (
-        <EmptyState
-          icon={<FileText />}
-          title="No invoices yet"
-          description="Create your first invoice to get paid."
-        />
-      ) : (
-        <div className="overflow-x-auto rounded-xl border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-left text-muted-foreground">
-              <tr>
-                <th className="px-4 py-3 font-medium">Number</th>
-                <th className="px-4 py-3 font-medium">Client</th>
-                <th className="px-4 py-3 font-medium">Due</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 text-right font-medium">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((invoice) => (
-                <tr key={invoice.id} className="border-t">
-                  <td className="px-4 py-3">
-                    <Link className="font-medium hover:underline" to={`/invoices/${invoice.id}`}>
-                      {invoice.number}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3">{invoice.clientName}</td>
-                  <td className="px-4 py-3">{formatDate(invoice.dueDate)}</td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={invoice.status} />
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums">
-                    {formatAmount(invoice.amount, invoice.assetCode)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <StatusFilter
+        value={status}
+        onChange={(next) => setParams(next ? { status: next } : {}, { replace: true })}
+      />
+      <QueryView
+        query={query}
+        resource="invoices"
+        isEmpty={(invoices) => invoices.length === 0}
+        empty={
+          <EmptyState
+            icon={<FileText />}
+            title={status ? 'No invoices with this status' : 'No invoices yet'}
+            description={status ? 'Try another filter.' : 'Create your first invoice to get paid.'}
+          />
+        }
+      >
+        {(invoices) => (
+          <DataTable
+            aria-label="Invoices"
+            columns={invoiceColumns}
+            data={invoices}
+            getRowId={(invoice) => invoice.id}
+          />
+        )}
+      </QueryView>
     </>
   );
 }
