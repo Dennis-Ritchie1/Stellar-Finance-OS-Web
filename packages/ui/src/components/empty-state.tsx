@@ -9,7 +9,14 @@ export interface EmptyStateProps extends Omit<React.ComponentProps<'div'>, 'titl
 }
 
 /** Used for empty, error and permission-denied screen states. */
-export function EmptyState({ icon, title, description, action, className, ...props }: EmptyStateProps) {
+export function EmptyState({
+  icon,
+  title,
+  description,
+  action,
+  className,
+  ...props
+}: EmptyStateProps) {
   return (
     <div
       data-slot="empty-state"

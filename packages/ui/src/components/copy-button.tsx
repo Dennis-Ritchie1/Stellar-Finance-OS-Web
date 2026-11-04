@@ -8,7 +8,13 @@ export interface CopyButtonProps extends Omit<ButtonProps, 'onClick' | 'children
   label?: string;
 }
 
-export function CopyButton({ value, label = 'Copy', variant = 'outline', size = 'sm', ...props }: CopyButtonProps) {
+export function CopyButton({
+  value,
+  label = 'Copy',
+  variant = 'outline',
+  size = 'sm',
+  ...props
+}: CopyButtonProps) {
   const [copied, setCopied] = React.useState(false);
 
   React.useEffect(() => {

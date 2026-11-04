@@ -35,7 +35,11 @@ export interface StatusBadgeProps extends Omit<React.ComponentProps<'span'>, 'ch
 
 export function StatusBadge({ status, className, ...props }: StatusBadgeProps) {
   return (
-    <span data-slot="status-badge" className={cn(statusBadgeVariants({ status }), className)} {...props}>
+    <span
+      data-slot="status-badge"
+      className={cn(statusBadgeVariants({ status }), className)}
+      {...props}
+    >
       {LABELS[status]}
     </span>
   );
