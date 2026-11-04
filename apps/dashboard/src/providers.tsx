@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiClientProvider, ApiError, createApiClient } from '@finance-os/api-client';
+import { WalletProvider, type WalletClient } from '@finance-os/wallet';
 import { AuthProvider } from './auth/auth-provider';
 import { sessionStore } from './auth/session-store';
 import { env } from './env';
@@ -18,7 +19,13 @@ function makeQueryClient() {
   });
 }
 
-export function Providers({ children }: { children: ReactNode }) {
+export function Providers({
+  children,
+  walletClient,
+}: {
+  children: ReactNode;
+  walletClient?: WalletClient;
+}) {
   const [queryClient] = useState(makeQueryClient);
   const [apiClient] = useState(() =>
     createApiClient({
@@ -31,7 +38,11 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ApiClientProvider client={apiClient}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <WalletProvider network={env.network} client={walletClient}>
+            {children}
+          </WalletProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ApiClientProvider>
   );
