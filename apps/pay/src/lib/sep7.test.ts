@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildSep7PayUri } from './sep7';
+import { buildSep7PayUri, toSep7MemoType } from './sep7';
 
 describe('buildSep7PayUri', () => {
   it('encodes a USDC payment with memo', () => {
@@ -25,5 +25,12 @@ describe('buildSep7PayUri', () => {
   it('omits asset fields for native XLM', () => {
     const uri = buildSep7PayUri({ destination: 'GDEST', amount: '1', assetCode: 'XLM' });
     expect(uri).toBe('web+stellar:pay?destination=GDEST&amount=1');
+  });
+});
+
+describe('toSep7MemoType', () => {
+  it('maps API memo types', () => {
+    expect(toSep7MemoType('id')).toBe('MEMO_ID');
+    expect(toSep7MemoType('text')).toBe('MEMO_TEXT');
   });
 });

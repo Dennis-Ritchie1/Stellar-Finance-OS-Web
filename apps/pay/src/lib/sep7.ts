@@ -28,3 +28,14 @@ export function buildSep7PayUri(p: Sep7PayParams): string {
   if (p.networkPassphrase) params.set('network_passphrase', p.networkPassphrase);
   return `web+stellar:pay?${params.toString()}`;
 }
+
+const SEP7_MEMO_TYPES: Record<'text' | 'id' | 'hash', Sep7MemoType> = {
+  text: 'MEMO_TEXT',
+  id: 'MEMO_ID',
+  hash: 'MEMO_HASH',
+};
+
+/** Map the API's memo type to the SEP-7 `memo_type` value. */
+export function toSep7MemoType(memoType: 'text' | 'id' | 'hash'): Sep7MemoType {
+  return SEP7_MEMO_TYPES[memoType];
+}
