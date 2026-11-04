@@ -220,6 +220,34 @@ export interface components {
             email: string;
             senderAddresses?: string[];
         };
+        /** @enum {string} */
+        MemoType: "text" | "id" | "hash";
+        LineItem: {
+            description: string;
+            /** @description Decimal string, never a float */
+            quantity: string;
+            /** @description Decimal string, never a float */
+            unitPrice: string;
+            /** @description Decimal string, never a float */
+            total: string;
+        };
+        LineItemInput: {
+            description: string;
+            /** @description Decimal string, never a float */
+            quantity: string;
+            /** @description Decimal string, never a float */
+            unitPrice: string;
+        };
+        PaymentReference: {
+            /** @description M-address unique to this invoice */
+            muxedAddress: string;
+            /** @description Treasury G-address */
+            address: string;
+            /** @description Required when paying the G-address */
+            memo: string;
+            memoType: components["schemas"]["MemoType"];
+            assetIssuer: string;
+        };
     };
     responses: never;
     parameters: never;

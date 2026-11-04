@@ -596,6 +596,72 @@
           }
         },
         "required": ["name", "email"]
+      },
+      "MemoType": {
+        "type": "string",
+        "enum": ["text", "id", "hash"]
+      },
+      "LineItem": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "unitPrice": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "total": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          }
+        },
+        "required": ["description", "quantity", "unitPrice", "total"]
+      },
+      "LineItemInput": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "unitPrice": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          }
+        },
+        "required": ["description", "quantity", "unitPrice"]
+      },
+      "PaymentReference": {
+        "type": "object",
+        "properties": {
+          "muxedAddress": {
+            "type": "string",
+            "description": "M-address unique to this invoice"
+          },
+          "address": {
+            "type": "string",
+            "description": "Treasury G-address"
+          },
+          "memo": {
+            "type": "string",
+            "description": "Required when paying the G-address"
+          },
+          "memoType": {
+            "$ref": "#/components/schemas/MemoType"
+          },
+          "assetIssuer": {
+            "type": "string"
+          }
+        },
+        "required": ["muxedAddress", "address", "memo", "memoType", "assetIssuer"]
       }
     }
   }
