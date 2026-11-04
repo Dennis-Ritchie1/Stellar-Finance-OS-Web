@@ -218,3 +218,84 @@ stellar-sdk is loaded lazily (`lib/horizon.ts`) so the page stays light for firs
 The invoice is polled every 5 s until it is paid or void.
 
 > ⚠️ SEP-7 QR support varies by wallet. Test the QR flow with the wallets your pilot businesses' clients actually use.
+
+## Packages
+
+### `@finance-os/api-client` — the contract with the backend
+
+| Path                | Contents                                                                                                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `openapi.seed.json` | The API the frontend expects, until the backend publishes its own `/openapi.json`                                                                                       |
+| `src/schema.ts`     | **Generated** by `openapi-typescript`. Never edit by hand                                                                                                               |
+| `src/types.ts`      | Friendly aliases (`Invoice`, `PaymentRequest`, `Role`, …) over the generated schema                                                                                     |
+| `src/client.ts`     | `createApiClient({ baseUrl, getToken, getOrgId, onUnauthorized })` on `openapi-fetch`                                                                                   |
+| `src/errors.ts`     | `ApiError` (`status`, `isForbidden`, `isNotFound`) and `unwrap()`                                                                                                       |
+| `src/hooks/`        | TanStack Query hooks per resource: auth, clients, invoices, vendors, treasury, payment-requests, approvals, transactions, reports, settings; `keys.ts` holds query keys |
+| `src/mocks/`        | MSW mock backend (see [Mock API](#mock-api)); exported as `./mocks` and `./mocks/browser`                                                                               |
+
+```bash
+pnpm api:generate          # fetch $API_URL (or VITE_API_URL)/openapi.json → src/schema.ts
+pnpm api:generate --seed   # generate from openapi.seed.json instead
+```
+
+Commit the generated file so builds don't need a running backend. If the UI needs a field the API doesn't have, **change the
+backend (or the seed spec) and regenerate** — e.g. `PublicInvoice.amountDue` is computed by the server, not the UI.
+
+<details>
+<summary>Endpoints in the seed spec</summary>
+
+| Area         | Endpoints                                                                                                                                                 |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Auth         | `POST /auth/login` · `POST /auth/register` · `POST /auth/logout` · `GET /me`                                                                              |
+| Clients      | `GET POST /clients` · `GET PATCH /clients/{id}`                                                                                                           |
+| Invoices     | `GET POST /invoices` · `GET PATCH /invoices/{id}` · `POST /invoices/{id}/send` · `POST /invoices/{id}/void`                                               |
+| Public       | `GET /public/invoices/{publicToken}`                                                                                                                      |
+| Vendors      | `GET POST /vendors` · `PATCH /vendors/{id}`                                                                                                               |
+| Treasury     | `GET POST /treasury-accounts`                                                                                                                             |
+| Payments     | `GET POST /payment-requests` · `GET /payment-requests/{id}` · `POST …/approve` · `POST …/reject` · `POST …/build-tx` · `POST …/submit` · `GET /approvals` |
+| Transactions | `GET /transactions?matchStatus=` · `POST /transactions/{id}/match`                                                                                        |
+| Reporting    | `GET /dashboard/summary` · `GET /reports/treasury?from&to` · `GET /exports/reconciliation?from&to` (text/csv)                                             |
+| Settings     | `GET PATCH /org` · `GET POST /members` · `PATCH DELETE /members/{id}` · `GET POST /approval-policies` · `PATCH DELETE /approval-policies/{id}`            |
+
+All org-scoped requests carry `Authorization: Bearer …` and `X-Org-Id`.
+</details>
+
+### `@finance-os/ui` — shared components and design tokens
+
+shadcn/ui-style components on Radix + Tailwind v4. Apps import them; they never duplicate them.
+
+| Group             | Components                                                                                                                             |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Basics            | `Button`, `Card`, `Input`, `Textarea`, `NativeSelect`, `Label`, `Field`, `Separator`, `Skeleton`, `Spinner`                            |
+| Overlays          | `Dialog`, `Sheet` (drawer), `DropdownMenu`                                                                                             |
+| Feedback & states | `Alert`, `EmptyState`, `PageHeader`                                                                                                    |
+| Finance display   | `Amount`, `Address` (truncate + copy + explorer link), `CopyButton`, `StatusBadge` (invoices), `PaymentStatusBadge`, `DescriptionList` |
+| Data              | `Table` primitives, `DataTable` (sortable, TanStack Table v9)                                                                          |
+| Charts            | `CashflowChart`, `BalanceChart`, `ChartTable` (table view), `ChartTooltipCard` (Recharts)                                              |
+
+`src/styles/globals.css` is the Tailwind preset: neutral palette, one teal-blue accent, status colors, two chart series colors
+(validated for colour-blind separation and contrast) and a `.dark` variant. Apps include it with
+`@import '@finance-os/ui/globals.css';`. Add new shadcn components from `packages/ui` with `pnpm dlx shadcn@latest add <name>`.
+
+### `@finance-os/wallet` — connect and sign
+
+| Export                                                               | Purpose                                                                                                                      |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `WalletProvider`, `useWallet()`                                      | `connect`, `disconnect`, `signTransaction(xdr, { expectedSigner })`; checks the network before every signature               |
+| `WalletCheckError`                                                   | `not-connected` · `network-mismatch` · `wrong-account`, with a plain-language message                                        |
+| `createWalletClient(network)`                                        | Lazy wrapper around `@creit.tech/stellar-wallets-kit` (Freighter, xBull, Lobstr, …)                                          |
+| `checkNetwork`, `checkSigner`, `parseNetwork`, `NETWORK_PASSPHRASES` | Pure helpers                                                                                                                 |
+| `describeWalletError`                                                | Turns wallet errors ("User declined") into plain language                                                                    |
+| `@finance-os/wallet/payment`                                         | `createHorizon(url)` and `buildPaymentTransaction()` for client-side invoice payments (pulls in stellar-sdk — import lazily) |
+| `@finance-os/wallet/testing`                                         | `createFakeWalletClient()` for tests                                                                                         |
+
+This package never sees a secret key.
+
+### `@finance-os/utils`
+
+| Module       | Functions                                                                                                                                             |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `money.ts`   | `formatAmount("5000", "USDC")` → `5,000.00 USDC`, `formatDecimal`, `isValidAmount`, `multiplyDecimals`, `sumDecimals` — all on `big.js`, never floats |
+| `date.ts`    | `formatDate`, `formatRelative`, `daysOverdue` (local timezone)                                                                                        |
+| `address.ts` | `truncateAddress` (`GABC…WXYZ`), `explorerUrl`                                                                                                        |
+| `stellar.ts` | `isStellarAccountId`, `isMuxedAddress`, `isValidMemo` (form validation only — the backend is authoritative)                                           |
