@@ -412,6 +412,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reports/treasury": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getTreasuryReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -695,6 +711,32 @@ export interface components {
             overdueInvoices: components["schemas"]["InvoiceTotals"];
             pendingApprovals: number;
             unmatchedPayments: number;
+        };
+        TreasuryReportPoint: {
+            /** Format: date */
+            date: string;
+            /** @description Decimal string, never a float */
+            inflow: string;
+            /** @description Decimal string, never a float */
+            outflow: string;
+            /** @description Decimal string, never a float */
+            balance: string;
+        };
+        TreasuryReport: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            assetCode: string;
+            /** @description Decimal string, never a float */
+            totalInflow: string;
+            /** @description Decimal string, never a float */
+            totalOutflow: string;
+            /** @description Decimal string, never a float */
+            openingBalance: string;
+            /** @description Decimal string, never a float */
+            closingBalance: string;
+            series: components["schemas"]["TreasuryReportPoint"][];
         };
     };
     responses: never;
@@ -1682,6 +1724,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DashboardSummary"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getTreasuryReport: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TreasuryReport"];
                 };
             };
             /** @description Error */

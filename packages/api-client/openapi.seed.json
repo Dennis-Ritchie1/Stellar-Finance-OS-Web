@@ -1159,6 +1159,53 @@
           }
         }
       }
+    },
+    "/reports/treasury": {
+      "get": {
+        "operationId": "getTreasuryReport",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TreasuryReport"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2024,6 +2071,76 @@
           "overdueInvoices",
           "pendingApprovals",
           "unmatchedPayments"
+        ]
+      },
+      "TreasuryReportPoint": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "inflow": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "outflow": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "balance": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          }
+        },
+        "required": ["date", "inflow", "outflow", "balance"]
+      },
+      "TreasuryReport": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date"
+          },
+          "to": {
+            "type": "string",
+            "format": "date"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "totalInflow": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "totalOutflow": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "openingBalance": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "closingBalance": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "series": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TreasuryReportPoint"
+            }
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "assetCode",
+          "totalInflow",
+          "totalOutflow",
+          "openingBalance",
+          "closingBalance",
+          "series"
         ]
       }
     }
