@@ -89,3 +89,36 @@ Both apps read one `.env` at the **repo root** (`envDir: '../..'` in each `vite.
 | `VITE_PAY_APP_URL`     | `http://localhost:5174`    | dashboard | Base of invoice pay links (`/i/:publicToken`)                                |
 | `VITE_HORIZON_URL`     | Horizon testnet            | pay       | Where the pay page loads the payer's account and submits their payment       |
 | `VITE_ENABLE_MOCKS`    | `true`                     | both      | Dev only: serve the API from MSW. Ignored in production builds               |
+
+## Repository layout
+
+```
+finance-os-web/
+├── apps/
+│   ├── dashboard/src/
+│   │   ├── auth/          # session store, AuthProvider, route guards, role → permission matrix
+│   │   ├── components/    # app-level pieces: QueryView, Can, OrgSwitcher, UserMenu, NetworkBadge
+│   │   ├── features/      # per-domain building blocks (invoices, payments, approvals, transactions, …)
+│   │   ├── layouts/       # sidebar app shell, auth layout, nav items
+│   │   ├── routes/        # one file per screen (+ settings/ sub-pages), each with a *.test.tsx
+│   │   ├── test/          # renderApp() + MSW node server for tests
+│   │   ├── router.tsx     # route table and guards
+│   │   ├── providers.tsx  # API client, TanStack Query, auth, wallet
+│   │   └── mocks.ts       # starts MSW in dev when VITE_ENABLE_MOCKS=true
+│   └── pay/src/
+│       ├── components/    # invoice summary, connect-wallet pay, pay-from-any-wallet (QR), paid banner
+│       ├── lib/           # SEP-7 URI builder, lazy Horizon client
+│       ├── routes/        # /i/:publicToken and the missing-link fallback
+│       └── test/          # renderPay() + MSW node server
+├── packages/
+│   ├── api-client/        # generated schema, typed client, TanStack Query hooks, MSW mocks
+│   ├── ui/                # shadcn-style components, charts, DataTable, Tailwind v4 tokens
+│   ├── wallet/            # Stellar Wallets Kit wrapper, network/signer checks, client-side payment builder
+│   └── utils/             # money (big.js), dates, address display, Stellar format checks
+├── .github/workflows/ci.yml
+├── turbo.json · pnpm-workspace.yaml · tsconfig.base.json · eslint.config.js
+├── .env.example
+└── AGENTS.md              # rules for AI assistants working in this repo
+```
+
+Internal packages are consumed as TypeScript source (their `exports` point at `src/`), so there is no package build step.
