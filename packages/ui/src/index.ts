@@ -65,3 +65,5 @@ export {
   type DataTableProps,
 } from './components/data-table';
 export { PaymentStatusBadge, type PaymentRequestStatus } from './components/payment-status-badge';
+export { ChartTable } from './components/chart-table';
+export { ChartTooltipCard, type ChartTooltipRow } from './components/chart-tooltip';
