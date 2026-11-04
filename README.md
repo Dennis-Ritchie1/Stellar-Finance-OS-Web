@@ -357,3 +357,29 @@ The full rules for contributors and AI assistants are in [`AGENTS.md`](AGENTS.md
 - Plain language for a non-crypto audience: "Payment received", not "Operation detected". Hide hashes behind explorer links.
 - Calm, neutral look with one accent colour and clear status badges (`Draft`, `Sent`, `Partially paid`, `Paid`, `Overdue`,
   `Void`); dark mode via the `.dark` class (toggle in the user menu).
+
+## Build order
+
+| #   | Task                                                                                   | Done when                                      | Status                                          |
+| --- | -------------------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------- |
+| 1   | Scaffold monorepo: pnpm, turbo, Vite apps, Tailwind preset, shadcn/ui in `packages/ui` | Both apps run with a shared Button             | ✅                                              |
+| 2   | `packages/api-client` generation + MSW mocks                                           | Typed hooks return mock data                   | ✅                                              |
+| 3   | App shell: auth pages, sidebar layout, org switcher, route guards                      | Login → dashboard with mocks                   | ✅                                              |
+| 4   | `packages/wallet` (connect, network check, sign)                                       | Freighter signs a testnet tx                   | ✅ code & tests · ⏳ verify with real Freighter |
+| 5   | Clients + invoices (list, editor, detail with payment reference)                       | Create & send invoice end-to-end               | ✅                                              |
+| 6   | Pay app (`/i/:token`) with wallet pay + QR + status polling                            | Testnet payment flips invoice to Paid          | ✅ UI · ⏳ needs backend indexer                |
+| 7   | Vendors + payment requests + approval inbox                                            | Request → 2 approvals → approved               | ✅                                              |
+| 8   | Sign & submit outgoing payment                                                         | Settled status shown after indexer picks it up | ✅ (mock indexer)                               |
+| 9   | Transactions page + manual match drawer                                                | Unmatched payment can be linked to an invoice  | ✅                                              |
+| 10  | Dashboard widgets + reports charts                                                     | Numbers match API                              | ✅                                              |
+| 11  | Exports page                                                                           | CSV downloads                                  | ✅                                              |
+| 12  | Settings: members, roles, treasury accounts, approval policies                         | Role changes reflect in UI                     | ✅                                              |
+| 13  | Playwright E2E for invoice-to-paid and request-to-settled                              | Green in CI                                    | ⏳                                              |
+
+### Prompt template
+
+```
+You are working in finance-os-web. Read README.md and AGENTS.md first.
+Task: <task # and name>. Use components from packages/ui and hooks from packages/api-client.
+Deliver: code + tests, all four UI states (loading/empty/error/denied). List assumptions at the end.
+```
