@@ -13,3 +13,4 @@ export { EmptyState, type EmptyStateProps } from './components/empty-state';
 export { PageHeader, type PageHeaderProps } from './components/page-header';
 export { Spinner } from './components/spinner';
 export { CopyButton, type CopyButtonProps } from './components/copy-button';
+export { Input } from './components/input';
