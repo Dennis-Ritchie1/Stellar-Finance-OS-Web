@@ -144,33 +144,33 @@ export interface components {
             id: string;
             number: string;
             status: components["schemas"]["InvoiceStatus"];
-            /** @description Decimal string */
+            clientId: string;
+            clientName: string;
+            /** @description Decimal string, never a float */
             amount: string;
+            /** @description Decimal string, never a float */
+            amountPaid: string;
             assetCode: string;
             /** Format: date-time */
+            issueDate: string;
+            /** Format: date-time */
             dueDate: string;
-            clientName: string;
+            publicToken: string;
+            notes: string;
         };
         PublicInvoice: {
             businessName: string;
             number: string;
             status: components["schemas"]["InvoiceStatus"];
+            /** @description Decimal string, never a float */
             amount: string;
+            /** @description Decimal string, never a float */
+            amountPaid: string;
             assetCode: string;
             /** Format: date-time */
             dueDate: string;
-            lineItems: {
-                description: string;
-                quantity: string;
-                unitPrice: string;
-                total: string;
-            }[];
-            payment: {
-                muxedAddress: string;
-                address: string;
-                memo: string;
-                assetIssuer: string;
-            };
+            lineItems: components["schemas"]["LineItem"][];
+            payment: components["schemas"]["PaymentReference"];
         };
         Error: {
             code: string;
@@ -247,6 +247,32 @@ export interface components {
             memo: string;
             memoType: components["schemas"]["MemoType"];
             assetIssuer: string;
+        };
+        InvoiceMatch: {
+            id: string;
+            transactionId: string;
+            txHash: string;
+            /** @description Decimal string, never a float */
+            amount: string;
+            assetCode: string;
+            /** Format: date-time */
+            matchedAt: string;
+            /** @enum {string} */
+            method: "automatic" | "manual";
+            from: string;
+        };
+        InvoiceDetail: components["schemas"]["Invoice"] & {
+            lineItems: components["schemas"]["LineItem"][];
+            payment: components["schemas"]["PaymentReference"];
+            matches: components["schemas"]["InvoiceMatch"][];
+        };
+        InvoiceInput: {
+            clientId: string;
+            assetCode: string;
+            /** Format: date-time */
+            dueDate: string;
+            notes?: string;
+            lineItems: components["schemas"]["LineItemInput"][];
         };
     };
     responses: never;

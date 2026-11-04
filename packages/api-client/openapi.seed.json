@@ -345,7 +345,6 @@
       },
       "Invoice": {
         "type": "object",
-        "required": ["id", "number", "status", "amount", "assetCode", "dueDate", "clientName"],
         "properties": {
           "id": {
             "type": "string"
@@ -356,34 +355,55 @@
           "status": {
             "$ref": "#/components/schemas/InvoiceStatus"
           },
+          "clientId": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
           "amount": {
             "type": "string",
-            "description": "Decimal string"
+            "description": "Decimal string, never a float"
+          },
+          "amountPaid": {
+            "type": "string",
+            "description": "Decimal string, never a float"
           },
           "assetCode": {
             "type": "string"
+          },
+          "issueDate": {
+            "type": "string",
+            "format": "date-time"
           },
           "dueDate": {
             "type": "string",
             "format": "date-time"
           },
-          "clientName": {
+          "publicToken": {
+            "type": "string"
+          },
+          "notes": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "id",
+          "number",
+          "status",
+          "clientId",
+          "clientName",
+          "amount",
+          "amountPaid",
+          "assetCode",
+          "issueDate",
+          "dueDate",
+          "publicToken",
+          "notes"
+        ]
       },
       "PublicInvoice": {
         "type": "object",
-        "required": [
-          "businessName",
-          "number",
-          "status",
-          "amount",
-          "assetCode",
-          "dueDate",
-          "lineItems",
-          "payment"
-        ],
         "properties": {
           "businessName": {
             "type": "string"
@@ -395,7 +415,12 @@
             "$ref": "#/components/schemas/InvoiceStatus"
           },
           "amount": {
-            "type": "string"
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "amountPaid": {
+            "type": "string",
+            "description": "Decimal string, never a float"
           },
           "assetCode": {
             "type": "string"
@@ -407,43 +432,24 @@
           "lineItems": {
             "type": "array",
             "items": {
-              "type": "object",
-              "required": ["description", "quantity", "unitPrice", "total"],
-              "properties": {
-                "description": {
-                  "type": "string"
-                },
-                "quantity": {
-                  "type": "string"
-                },
-                "unitPrice": {
-                  "type": "string"
-                },
-                "total": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/LineItem"
             }
           },
           "payment": {
-            "type": "object",
-            "required": ["muxedAddress", "address", "memo", "assetIssuer"],
-            "properties": {
-              "muxedAddress": {
-                "type": "string"
-              },
-              "address": {
-                "type": "string"
-              },
-              "memo": {
-                "type": "string"
-              },
-              "assetIssuer": {
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/PaymentReference"
           }
-        }
+        },
+        "required": [
+          "businessName",
+          "number",
+          "status",
+          "amount",
+          "amountPaid",
+          "assetCode",
+          "dueDate",
+          "lineItems",
+          "payment"
+        ]
       },
       "Error": {
         "type": "object",
@@ -662,6 +668,101 @@
           }
         },
         "required": ["muxedAddress", "address", "memo", "memoType", "assetIssuer"]
+      },
+      "InvoiceMatch": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "transactionId": {
+            "type": "string"
+          },
+          "txHash": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Decimal string, never a float"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "matchedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "method": {
+            "type": "string",
+            "enum": ["automatic", "manual"]
+          },
+          "from": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "transactionId",
+          "txHash",
+          "amount",
+          "assetCode",
+          "matchedAt",
+          "method",
+          "from"
+        ]
+      },
+      "InvoiceDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Invoice"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "lineItems": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LineItem"
+                }
+              },
+              "payment": {
+                "$ref": "#/components/schemas/PaymentReference"
+              },
+              "matches": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InvoiceMatch"
+                }
+              }
+            },
+            "required": ["lineItems", "payment", "matches"]
+          }
+        ]
+      },
+      "InvoiceInput": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string"
+          },
+          "assetCode": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineItemInput"
+            }
+          }
+        },
+        "required": ["clientId", "assetCode", "dueDate", "lineItems"]
       }
     }
   }
