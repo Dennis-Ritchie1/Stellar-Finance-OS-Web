@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["VITE_API_URL", "VITE_STELLAR_NETWORK", "VITE_EXPLORER_URL", "VITE_PAY_APP_URL"],
+  "globalEnv": ["VITE_API_URL", "VITE_STELLAR_NETWORK", "VITE_EXPLORER_URL", "VITE_PAY_APP_URL", "VITE_ENABLE_MOCKS"],
   "tasks": {
     "transit": {
       "dependsOn": ["^transit"]
