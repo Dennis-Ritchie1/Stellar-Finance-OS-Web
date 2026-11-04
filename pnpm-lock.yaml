@@ -226,9 +226,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.105.3
         version: 5.105.3(@types/react@19.3.0)(react@19.3.1)
-      '@tanstack/react-table':
-        specifier: ^9.3.1
-        version: 9.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       lucide-react:
         specifier: ^1.67.0
         version: 1.67.0(@types/react@19.3.0)(react@19.3.1)
