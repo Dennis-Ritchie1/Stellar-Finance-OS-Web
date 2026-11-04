@@ -1,0 +1,98 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Finance OS API (bootstrap seed)",
+    "version": "0.0.0",
+    "description": "Placeholder spec used only until finance-os-backend publishes /openapi.json. Replace by running `pnpm api:generate` against the real backend."
+  },
+  "paths": {
+    "/invoices": {
+      "get": {
+        "operationId": "listInvoices",
+        "parameters": [
+          { "name": "status", "in": "query", "required": false, "schema": { "$ref": "#/components/schemas/InvoiceStatus" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoices for the current org",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["data"],
+                  "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/Invoice" } } }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/invoices/{publicToken}": {
+      "get": {
+        "operationId": "getPublicInvoice",
+        "parameters": [{ "name": "publicToken", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Public view of an invoice for the pay page",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PublicInvoice" } } }
+          },
+          "404": { "description": "Not found" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InvoiceStatus": { "type": "string", "enum": ["draft", "sent", "partially_paid", "paid", "overdue", "void"] },
+      "Invoice": {
+        "type": "object",
+        "required": ["id", "number", "status", "amount", "assetCode", "dueDate", "clientName"],
+        "properties": {
+          "id": { "type": "string" },
+          "number": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/InvoiceStatus" },
+          "amount": { "type": "string", "description": "Decimal string" },
+          "assetCode": { "type": "string" },
+          "dueDate": { "type": "string", "format": "date-time" },
+          "clientName": { "type": "string" }
+        }
+      },
+      "PublicInvoice": {
+        "type": "object",
+        "required": ["businessName", "number", "status", "amount", "assetCode", "dueDate", "lineItems", "payment"],
+        "properties": {
+          "businessName": { "type": "string" },
+          "number": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/InvoiceStatus" },
+          "amount": { "type": "string" },
+          "assetCode": { "type": "string" },
+          "dueDate": { "type": "string", "format": "date-time" },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["description", "quantity", "unitPrice", "total"],
+              "properties": {
+                "description": { "type": "string" },
+                "quantity": { "type": "string" },
+                "unitPrice": { "type": "string" },
+                "total": { "type": "string" }
+              }
+            }
+          },
+          "payment": {
+            "type": "object",
+            "required": ["muxedAddress", "address", "memo", "assetIssuer"],
+            "properties": {
+              "muxedAddress": { "type": "string" },
+              "address": { "type": "string" },
+              "memo": { "type": "string" },
+              "assetIssuer": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
