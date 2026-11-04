@@ -56,3 +56,11 @@ export { Separator } from './components/separator';
 export { Address, type AddressProps } from './components/address';
 export { Amount, type AmountProps } from './components/amount';
 export { DescriptionList, type DescriptionItem } from './components/description-list';
+export {
+  DataTable,
+  createDataTableColumns,
+  dataTableFeatures,
+  type DataTableColumn,
+  type DataTableFeatures,
+  type DataTableProps,
+} from './components/data-table';
