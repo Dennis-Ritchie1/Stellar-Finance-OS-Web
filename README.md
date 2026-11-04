@@ -383,3 +383,23 @@ You are working in finance-os-web. Read README.md and AGENTS.md first.
 Task: <task # and name>. Use components from packages/ui and hooks from packages/api-client.
 Deliver: code + tests, all four UI states (loading/empty/error/denied). List assumptions at the end.
 ```
+
+## Tech stack
+
+| Concern      | Choice                                                                                    |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| Build        | Vite 8 + React 19 + TypeScript 6 (strict)                                                 |
+| Monorepo     | pnpm workspaces + Turborepo                                                               |
+| Styling      | Tailwind CSS v4 + shadcn/ui (Radix)                                                       |
+| Routing      | React Router                                                                              |
+| Server state | TanStack Query                                                                            |
+| Forms        | React Hook Form + Zod                                                                     |
+| Tables       | TanStack Table v9                                                                         |
+| Charts       | Recharts                                                                                  |
+| API client   | `openapi-typescript` + `openapi-fetch`                                                    |
+| API mocks    | MSW                                                                                       |
+| Wallets      | `@creit.tech/stellar-wallets-kit` (Freighter, xBull, Lobstr, … — verify the current list) |
+| Stellar      | `@stellar/stellar-sdk` (pay page payments, mock transaction building)                     |
+| QR codes     | `qrcode.react` (SEP-7 payment URIs)                                                       |
+| Money        | `big.js`                                                                                  |
+| Tests        | Vitest + React Testing Library; Playwright planned for E2E                                |
