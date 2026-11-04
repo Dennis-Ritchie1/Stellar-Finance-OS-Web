@@ -10,12 +10,19 @@ const invoice: PublicInvoice = {
   number: 'INV-0042',
   status: 'sent',
   amount: '1250.00',
+  amountPaid: '0',
   assetCode: 'USDC',
   dueDate: '2026-12-01T00:00:00Z',
   lineItems: [
     { description: 'Design work', quantity: '1', unitPrice: '1250.00', total: '1250.00' },
   ],
-  payment: { muxedAddress: 'MDEST', address: 'GDEST', memo: '42', assetIssuer: 'GISSUER' },
+  payment: {
+    muxedAddress: 'MDEST',
+    address: 'GDEST',
+    memo: '42',
+    memoType: 'id',
+    assetIssuer: 'GISSUER',
+  },
 };
 
 function mockApi(status: number, body?: unknown) {
