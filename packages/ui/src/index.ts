@@ -54,3 +54,4 @@ export { Skeleton } from './components/skeleton';
 export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from './components/table';
 export { Separator } from './components/separator';
 export { Address, type AddressProps } from './components/address';
+export { Amount, type AmountProps } from './components/amount';
