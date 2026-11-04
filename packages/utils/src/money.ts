@@ -30,7 +30,11 @@ export function formatDecimal(amount: string, options: FormatAmountOptions = {})
 }
 
 /** `formatAmount("5000", "USDC")` → `"5,000.00 USDC"`. Always shows the asset code. */
-export function formatAmount(amount: string, assetCode: string, options?: FormatAmountOptions): string {
+export function formatAmount(
+  amount: string,
+  assetCode: string,
+  options?: FormatAmountOptions,
+): string {
   return `${formatDecimal(amount, options)} ${assetCode}`;
 }
 

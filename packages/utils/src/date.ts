@@ -8,7 +8,11 @@ const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
 ];
 
 /** "in 3 days", "2 hours ago". Uses the user's locale by default. */
-export function formatRelative(date: Date | string, now: Date = new Date(), locale?: string): string {
+export function formatRelative(
+  date: Date | string,
+  now: Date = new Date(),
+  locale?: string,
+): string {
   const target = typeof date === 'string' ? new Date(date) : date;
   const diffSeconds = Math.round((target.getTime() - now.getTime()) / 1000);
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
