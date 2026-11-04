@@ -14,7 +14,12 @@ import { NotFoundPage } from './routes/not-found';
 import { OutgoingPaymentsPage } from './routes/payments-outgoing';
 import { RegisterPage } from './routes/register';
 import { ReportsPage } from './routes/reports';
-import { SettingsPage } from './routes/settings/settings';
+import { MembersSettingsPage } from './routes/settings/members-settings';
+import { OrgSettingsPage } from './routes/settings/org-settings';
+import { PoliciesSettingsPage } from './routes/settings/policies-settings';
+import { SettingsLayout } from './routes/settings/settings-layout';
+import { TreasurySettingsPage } from './routes/settings/treasury-settings';
+import { WalletSettingsPage } from './routes/settings/wallet-settings';
 import { TransactionsPage } from './routes/transactions';
 import { VendorsPage } from './routes/vendors';
 
@@ -49,7 +54,17 @@ export const routes: RouteObject[] = [
           { path: 'transactions', element: <TransactionsPage /> },
           { path: 'reports', element: <ReportsPage /> },
           { path: 'exports', element: <ExportsPage /> },
-          { path: 'settings/*', element: <SettingsPage /> },
+          {
+            path: 'settings',
+            element: <SettingsLayout />,
+            children: [
+              { index: true, element: <OrgSettingsPage /> },
+              { path: 'members', element: <MembersSettingsPage /> },
+              { path: 'treasury', element: <TreasurySettingsPage /> },
+              { path: 'policies', element: <PoliciesSettingsPage /> },
+              { path: 'wallet', element: <WalletSettingsPage /> },
+            ],
+          },
           { path: '*', element: <NotFoundPage /> },
         ],
       },
