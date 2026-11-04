@@ -5,3 +5,4 @@ export * from './clients';
 export * from './vendors';
 export * from './treasury';
 export * from './payment-requests';
+export * from './approvals';
