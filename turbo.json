@@ -6,6 +6,8 @@
     "VITE_EXPLORER_URL",
     "VITE_PAY_APP_URL",
     "VITE_ENABLE_MOCKS",
+    "VITE_E2E",
+    "VITE_E2E_RELAY_URL",
     "VITE_HORIZON_URL"
   ],
   "tasks": {

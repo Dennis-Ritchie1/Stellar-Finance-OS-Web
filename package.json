@@ -13,6 +13,8 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "format": "prettier --write .",
+    "e2e": "pnpm --filter @finance-os/e2e e2e",
+    "e2e:ui": "pnpm --filter @finance-os/e2e e2e:ui",
     "api:generate": "pnpm --filter @finance-os/api-client generate"
   },
   "devDependencies": {
