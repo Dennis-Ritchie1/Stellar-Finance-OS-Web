@@ -13,12 +13,18 @@ import {
   CardTitle,
   DescriptionList,
 } from '@finance-os/ui';
-import { AlertCircle, CheckCircle2, Loader2, Wallet } from 'lucide-react';
-import { env } from '../env';
+import { AlertCircle, Loader2, Wallet } from 'lucide-react';
+import { stroopsToXlm } from '@finance-os/utils';
 import { useWalletPayment } from './use-wallet-payment';
 
-export function ConnectWalletPay({ invoice }: { invoice: PublicInvoice }) {
-  const { state, start, confirm, reset } = useWalletPayment(invoice);
+export function ConnectWalletPay({
+  invoice,
+  onSubmitted,
+}: {
+  invoice: PublicInvoice;
+  onSubmitted: (submission: { hash: string; amount: string }) => void;
+}) {
+  const { state, start, confirm, reset } = useWalletPayment(invoice, onSubmitted);
 
   return (
     <Card>
@@ -27,7 +33,15 @@ export function ConnectWalletPay({ invoice }: { invoice: PublicInvoice }) {
         <CardDescription>Freighter, xBull, Lobstr and other Stellar wallets.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        {state.step === 'review' || state.step === 'signing' ? (
+        {state.step === 'checking' ? (
+          <Alert>
+            <Loader2 className="animate-spin" />
+            <AlertTitle>Checking whether your payment went through…</AlertTitle>
+            <AlertDescription>
+              The network was slow to answer. Please keep this page open and don't pay again.
+            </AlertDescription>
+          </Alert>
+        ) : state.step === 'review' || state.step === 'signing' ? (
           <>
             <p className="text-sm">Check the details, then approve the payment in your wallet.</p>
             <DescriptionList
@@ -41,7 +55,10 @@ export function ConnectWalletPay({ invoice }: { invoice: PublicInvoice }) {
                 { label: 'To', value: invoice.businessName },
                 { label: 'Invoice address', value: <Address value={state.payment.destination} /> },
                 { label: 'From your wallet', value: <Address value={state.payer} /> },
-                { label: 'Network fee', value: 'Under 0.001 XLM' },
+                {
+                  label: 'Network fee',
+                  value: `Up to ${stroopsToXlm(state.feeStroops)} XLM`,
+                },
               ]}
             />
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -59,22 +76,6 @@ export function ConnectWalletPay({ invoice }: { invoice: PublicInvoice }) {
               </Button>
             </div>
           </>
-        ) : state.step === 'submitted' ? (
-          <Alert variant="success">
-            <CheckCircle2 />
-            <AlertTitle>Payment sent</AlertTitle>
-            <AlertDescription>
-              We're confirming it now — this page updates automatically.{' '}
-              <a
-                className="text-primary underline"
-                href={`${env.explorerUrl.replace(/\/+$/, '')}/tx/${state.hash}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                View on explorer
-              </a>
-            </AlertDescription>
-          </Alert>
         ) : (
           <>
             {state.step === 'error' ? (

@@ -1,11 +1,11 @@
 import { useParams } from 'react-router';
-import { usePublicInvoice } from '@finance-os/api-client';
+import { usePublicInvoice, type PublicInvoice } from '@finance-os/api-client';
 import { Button, EmptyState, Spinner } from '@finance-os/ui';
 import { AlertTriangle, Ban } from 'lucide-react';
-import { ConnectWalletPay } from '../components/connect-wallet-pay';
 import { InvoiceSummary } from '../components/invoice-summary';
 import { PaidBanner } from '../components/paid-banner';
-import { PayFromAnyWallet } from '../components/pay-from-any-wallet';
+import { PaymentOptions } from '../components/payment-options';
+import { usePendingPayment } from '../components/use-pending-payment';
 
 /** Poll for the indexer to match the payment. */
 const POLL_MS = 5_000;
@@ -36,6 +36,13 @@ export function PayInvoicePage() {
     );
   }
 
+  return <InvoiceContent publicToken={publicToken} invoice={invoice} />;
+}
+
+/** Mounted for every loaded invoice so a stored submission is cleared once the invoice is paid. */
+function InvoiceContent({ publicToken, invoice }: { publicToken: string; invoice: PublicInvoice }) {
+  const { pending, record, dismiss } = usePendingPayment(publicToken, invoice);
+
   return (
     <div className="space-y-4">
       <InvoiceSummary invoice={invoice} />
@@ -53,10 +60,12 @@ export function PayInvoicePage() {
           description="The business hasn't sent it."
         />
       ) : (
-        <>
-          <ConnectWalletPay invoice={invoice} />
-          <PayFromAnyWallet invoice={invoice} />
-        </>
+        <PaymentOptions
+          invoice={invoice}
+          pending={pending}
+          onSubmitted={record}
+          onPayAgain={dismiss}
+        />
       )}
     </div>
   );

@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_PAY_APP_URL: string;
   readonly VITE_ENABLE_MOCKS?: string;
   readonly VITE_HORIZON_URL?: string;
+  readonly VITE_PENDING_PAYMENT_MINUTES?: string;
 }
 
 interface ImportMeta {
