@@ -39,7 +39,7 @@ wired up yet — `packages/api-client/openapi.seed.json` is the API contract the
 | Login / register, org switcher, role-based UI                         | Point at the real `finance-os-backend`                  |
 | Clients and invoices: create, send, void, pay link                    | Verify real Freighter signing on testnet                |
 | Pay page: wallet pay, SEP-7 QR, live "Paid ✓" status                  | "Paid" after a _real_ payment needs the backend indexer |
-| Vendors, payment requests, multi-approver approvals                   | Playwright end-to-end tests (task 13)                   |
+| Vendors, payment requests, multi-approver approvals                   | —                                                       |
 | Sign & send outgoing payments                                         | Route-level code splitting for the dashboard bundle     |
 | Transactions + manual match, dashboard, reports, CSV export, settings |                                                         |
 
@@ -74,6 +74,8 @@ Public pay pages: `http://localhost:5174/i/pub_1001` (unpaid), `/i/pub_1006` (pa
 | `pnpm lint`         | ESLint across the workspace                                                                      |
 | `pnpm typecheck`    | `tsc --noEmit` in every package                                                                  |
 | `pnpm test`         | Vitest in every package                                                                          |
+| `pnpm e2e`          | Playwright end-to-end specs (Chromium + mobile WebKit); needs no backend                         |
+| `pnpm e2e:ui`       | Same specs in Playwright's interactive UI mode                                                   |
 | `pnpm format`       | Prettier                                                                                         |
 | `pnpm api:generate` | Regenerate `packages/api-client/src/schema.ts` from the backend (`--seed` to use the local spec) |
 
@@ -331,7 +333,14 @@ Business rules in the mocks exist only because they stand in for the server. Nev
 - The dashboard test setup swaps in Node's `Uint8Array` because jsdom's breaks stellar-sdk's `instanceof` checks.
 - **CI** (`.github/workflows/ci.yml`) runs `pnpm lint`, `typecheck`, `test` and `build` on pushes to `main` and on PRs.
 - Turborepo caches tasks; the `transit` task makes typecheck/lint/test re-run when a dependency package changes.
-- Playwright E2E is not set up yet (task 13).
+- **Playwright E2E** (`e2e/`, `pnpm e2e`): invoice-to-paid, request-to-settled and a viewer permissions smoke test, run in
+  Chromium and an iPhone-sized WebKit. `playwright.config.ts` starts both apps with `VITE_ENABLE_MOCKS=true` and
+  `VITE_E2E=true`, plus `e2e/state-relay.mjs`. First time: `pnpm --filter @finance-os/e2e exec playwright install chromium webkit`.
+  - The e2e flag (dev only, never in production builds) swaps in `createFakeWalletClient()` — no key is ever loaded — and
+    makes the two apps' MSW workers share one mock database through the relay, so a pay link made in the dashboard opens in
+    the pay app. Specs run serially and reset the relay before each test.
+  - The mock backend has a test-only `POST /__test__/index-payment` that simulates the indexer matching a payment.
+  - Horizon is stubbed with Playwright routes. Specs use role/label locators. CI uploads the HTML report and traces on failure.
 
 ## Conventions
 
@@ -375,7 +384,7 @@ The full rules for contributors and AI assistants are in [`AGENTS.md`](AGENTS.md
 | 10  | Dashboard widgets + reports charts                                                     | Numbers match API                              | ✅                                              |
 | 11  | Exports page                                                                           | CSV downloads                                  | ✅                                              |
 | 12  | Settings: members, roles, treasury accounts, approval policies                         | Role changes reflect in UI                     | ✅                                              |
-| 13  | Playwright E2E for invoice-to-paid and request-to-settled                              | Green in CI                                    | ⏳                                              |
+| 13  | Playwright E2E for invoice-to-paid and request-to-settled                              | Green in CI                                    | ✅                                              |
 
 ### Prompt template
 
@@ -403,4 +412,4 @@ Deliver: code + tests, all four UI states (loading/empty/error/denied). List ass
 | Stellar      | `@stellar/stellar-sdk` (pay page payments, mock transaction building)                     |
 | QR codes     | `qrcode.react` (SEP-7 payment URIs)                                                       |
 | Money        | `big.js`                                                                                  |
-| Tests        | Vitest + React Testing Library; Playwright planned for E2E                                |
+| Tests        | Vitest + React Testing Library; Playwright for E2E                                        |

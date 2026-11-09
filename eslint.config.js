@@ -5,7 +5,16 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['**/dist', '**/coverage', '**/node_modules', 'packages/api-client/src/schema.ts'] },
+  {
+    ignores: [
+      '**/dist',
+      '**/coverage',
+      '**/playwright-report',
+      '**/test-results',
+      '**/node_modules',
+      'packages/api-client/src/schema.ts',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

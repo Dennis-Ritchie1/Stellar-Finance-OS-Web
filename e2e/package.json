@@ -1,0 +1,18 @@
+{
+  "name": "@finance-os/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@finance-os/api-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
+  }
+}
