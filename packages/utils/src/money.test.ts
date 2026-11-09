@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { formatAmount, formatDecimal, isValidAmount, multiplyDecimals, sumDecimals } from './money';
+import {
+  compareDecimals,
+  formatAmount,
+  formatDecimal,
+  isValidAmount,
+  multiplyDecimals,
+  stroopsToXlm,
+  sumDecimals,
+} from './money';
 
 describe('money', () => {
   it('formats with grouping and asset code', () => {
@@ -32,5 +40,23 @@ describe('decimal math for previews', () => {
 
   it('sums and ignores invalid entries', () => {
     expect(sumDecimals(['0.1', '0.2', 'abc', ''])).toBe('0.30');
+  });
+});
+
+describe('compareDecimals', () => {
+  it('compares exactly', () => {
+    expect(compareDecimals('0.30', '0.3')).toBe(0);
+    expect(compareDecimals('2000.01', '2000')).toBe(1);
+    expect(compareDecimals('1', '1000')).toBe(-1);
+    expect(compareDecimals('abc', '0')).toBe(0);
+  });
+});
+
+describe('stroopsToXlm', () => {
+  it('converts stroops to XLM', () => {
+    expect(stroopsToXlm('100')).toBe('0.00001');
+    expect(stroopsToXlm('1000')).toBe('0.0001');
+    expect(stroopsToXlm('12345')).toBe('0.0012345');
+    expect(stroopsToXlm('10000000')).toBe('1');
   });
 });

@@ -4,19 +4,38 @@ import { describeWalletError, useWallet, type InvoicePayment } from '@finance-os
 import { env } from '../env';
 import { horizon } from '../lib/horizon';
 
+function isUnconfirmed(e: unknown): e is { reason: string; hash: string } {
+  return (
+    typeof e === 'object' &&
+    e !== null &&
+    (e as { reason?: unknown }).reason === 'timeout_unknown' &&
+    typeof (e as { hash?: unknown }).hash === 'string'
+  );
+}
+
 export type PaymentStep =
   | { step: 'idle' }
   | { step: 'connecting' }
-  | { step: 'review'; payer: string; xdr: string; payment: InvoicePayment }
-  | { step: 'signing'; payer: string; payment: InvoicePayment }
-  | { step: 'submitted'; hash: string }
+  | {
+      step: 'review';
+      payer: string;
+      xdr: string;
+      payment: InvoicePayment;
+      feeStroops: string;
+    }
+  | { step: 'signing'; payer: string; payment: InvoicePayment; feeStroops: string }
+  | { step: 'checking'; payer: string; payment: InvoicePayment }
   | { step: 'error'; message: string };
 
 /**
  * Connect → build (client-side, to the invoice's muxed address) → review → sign → submit.
  * The page keeps polling the API; it flips to "Paid" once the indexer matches the payment.
  */
-export function useWalletPayment(invoice: PublicInvoice) {
+export function useWalletPayment(
+  invoice: PublicInvoice,
+  /** Called once the network accepted the payment (or may have — hash is public, nothing secret). */
+  onSubmitted: (submission: { hash: string; amount: string }) => void,
+) {
   const wallet = useWallet();
   const [state, setState] = useState<PaymentStep>({ step: 'idle' });
 
@@ -33,8 +52,8 @@ export function useWalletPayment(invoice: PublicInvoice) {
         assetCode: invoice.assetCode,
         assetIssuer: invoice.assetCode === 'XLM' ? undefined : invoice.payment.assetIssuer,
       };
-      const xdr = await horizon.buildPaymentXdr(payment, env.network);
-      setState({ step: 'review', payer, xdr, payment });
+      const { xdr, feeStroops } = await horizon.buildPaymentXdr(payment, env.network);
+      setState({ step: 'review', payer, xdr, payment, feeStroops });
     } catch (e) {
       fail(e);
     }
@@ -42,13 +61,18 @@ export function useWalletPayment(invoice: PublicInvoice) {
 
   async function confirm() {
     if (state.step !== 'review') return;
-    const { payer, payment, xdr } = state;
-    setState({ step: 'signing', payer, payment });
+    const { payer, payment, xdr, feeStroops } = state;
+    setState({ step: 'signing', payer, payment, feeStroops });
     try {
       const signed = await wallet.signTransaction(xdr);
-      const hash = await horizon.submit(signed, env.network);
-      setState({ step: 'submitted', hash });
+      const hash = await horizon.submit(signed, env.network, () =>
+        setState({ step: 'checking', payer, payment }),
+      );
+      onSubmitted({ hash, amount: payment.amount });
+      setState({ step: 'idle' });
     } catch (e) {
+      // The payment may still have landed: remember its (public) hash so we never invite a repeat.
+      if (isUnconfirmed(e)) onSubmitted({ hash: e.hash, amount: payment.amount });
       fail(e);
     }
   }

@@ -6,6 +6,8 @@ import { resetMockBackend, server } from './test/server';
 beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 beforeEach(() => {
   resetMockBackend();
+  window.localStorage.clear();
+  window.sessionStorage.clear();
 });
 // Vitest runs without globals, so Testing Library can't register auto-cleanup itself.
 afterEach(() => cleanup());
