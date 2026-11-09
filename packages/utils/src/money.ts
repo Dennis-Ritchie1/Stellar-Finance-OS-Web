@@ -64,3 +64,20 @@ export function sumDecimals(values: string[], decimals = 2): string {
     }, new Big(0))
     .toFixed(decimals, Big.roundHalfUp);
 }
+
+/** Exact decimal comparison: -1 if a < b, 0 if equal, 1 if a > b. Invalid input counts as zero. */
+export function compareDecimals(a: string, b: string): -1 | 0 | 1 {
+  const toBig = (v: string) => {
+    try {
+      return new Big(v || '0');
+    } catch {
+      return new Big(0);
+    }
+  };
+  return toBig(a).cmp(toBig(b)) as -1 | 0 | 1;
+}
+
+/** Convert a stroop count (1 XLM = 10,000,000 stroops) to an exact XLM decimal string. */
+export function stroopsToXlm(stroops: string): string {
+  return new Big(stroops).div(10_000_000).toFixed(7).replace(/0+$/, '').replace(/\.$/, '');
+}

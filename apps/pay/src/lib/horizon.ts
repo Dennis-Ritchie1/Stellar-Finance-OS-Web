@@ -10,7 +10,7 @@ export const horizon = {
   async buildPaymentXdr(payment: InvoicePayment, network: StellarNetwork) {
     return (await load()).buildPaymentXdr(payment, network);
   },
-  async submit(signedXdr: string, network: StellarNetwork) {
-    return (await load()).submit(signedXdr, network);
+  async submit(signedXdr: string, network: StellarNetwork, onChecking?: () => void) {
+    return (await load()).submit(signedXdr, network, onChecking);
   },
 };

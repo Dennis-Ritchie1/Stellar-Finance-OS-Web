@@ -5,8 +5,8 @@ import { createFakeWalletClient } from '@finance-os/wallet/testing';
 import { renderPay } from '../test/render';
 
 const horizonMock = vi.hoisted(() => ({
-  buildPaymentXdr: vi.fn(async () => 'UNSIGNED_XDR'),
-  submit: vi.fn(async () => 'abc123'),
+  buildPaymentXdr: vi.fn(async () => ({ xdr: 'UNSIGNED_XDR', feeStroops: '1000' })),
+  submit: vi.fn(async (..._args: unknown[]) => 'a'.repeat(64)),
 }));
 vi.mock('../lib/horizon', () => ({ horizon: horizonMock }));
 
@@ -31,12 +31,18 @@ describe('connect wallet & pay', () => {
       }),
       'testnet',
     );
+    expect(screen.getByText('Up to 0.0001 XLM')).toBeInTheDocument();
     expect(fake.calls.signed).toEqual([]);
 
     await user.click(screen.getByRole('button', { name: 'Confirm & sign' }));
-    expect(await screen.findByText('Payment sent')).toBeInTheDocument();
+    expect(await screen.findByText('Payment in progress')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /connect wallet & pay/i })).not.toBeInTheDocument();
     expect(fake.calls.signed).toEqual(['UNSIGNED_XDR']);
-    expect(horizonMock.submit).toHaveBeenCalledWith('signed:UNSIGNED_XDR', 'testnet');
+    expect(horizonMock.submit).toHaveBeenCalledWith(
+      'signed:UNSIGNED_XDR',
+      'testnet',
+      expect.any(Function),
+    );
   });
 
   it('blocks signing when the wallet is on another network', async () => {

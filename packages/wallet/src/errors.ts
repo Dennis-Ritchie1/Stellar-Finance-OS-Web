@@ -1,5 +1,7 @@
 /** Turn wallet-kit / extension errors into plain language for non-crypto users. */
 export function describeWalletError(error: unknown): string {
+  // PaymentError messages are already plain language; don't re-classify them by keyword.
+  if (error instanceof Error && error.name === 'PaymentError') return error.message;
   const message =
     typeof error === 'object' && error !== null && 'message' in error
       ? String((error as { message: unknown }).message)
