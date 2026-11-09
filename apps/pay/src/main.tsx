@@ -3,10 +3,12 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { Providers } from './providers';
 import { enableMocking } from './mocks';
+import { initErrorReporting } from './error-reporting';
 import { createRouter } from './router';
 import './index.css';
 
 await enableMocking();
+await initErrorReporting();
 
 const router = createRouter();
 

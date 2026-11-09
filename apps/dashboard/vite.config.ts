@@ -1,9 +1,13 @@
 import { defineConfig } from 'vitest/config';
+import { loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { msw } from 'msw/vite';
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ command, mode }) => ({
+  define: {
+    __SENTRY_ENABLED__: JSON.stringify(Boolean(loadEnv(mode, '../..', 'VITE_').VITE_SENTRY_DSN)),
+  },
   plugins: [
     react(),
     tailwindcss(),

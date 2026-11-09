@@ -69,3 +69,7 @@ export { ChartTable } from './components/chart-table';
 export { ChartTooltipCard, type ChartTooltipRow } from './components/chart-tooltip';
 export { CashflowChart, type CashflowPoint } from './components/cashflow-chart';
 export { BalanceChart, type BalancePoint } from './components/balance-chart';
+export {
+  RouteErrorBoundary,
+  type RouteErrorBoundaryProps,
+} from './components/route-error-boundary';

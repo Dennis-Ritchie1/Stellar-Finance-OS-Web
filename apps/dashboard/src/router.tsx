@@ -1,5 +1,6 @@
 import { createBrowserRouter, type RouteObject } from 'react-router';
 import { RedirectIfAuthenticated, RequireAuth } from './auth/guards';
+import { RouteError } from './components/route-error';
 import { AppLayout } from './layouts/app-layout';
 import { AuthLayout } from './layouts/auth-layout';
 import { ApprovalsPage } from './routes/approvals';
@@ -38,34 +39,42 @@ export const routes: RouteObject[] = [
   },
   {
     element: <RequireAuth />,
+    errorElement: <RouteError />,
     children: [
       {
         element: <AppLayout />,
+        errorElement: <RouteError />,
         children: [
-          { index: true, element: <HomePage /> },
-          { path: 'invoices', element: <InvoicesPage /> },
-          { path: 'invoices/new', element: <InvoiceEditorPage /> },
-          { path: 'invoices/:id', element: <InvoiceDetailPage /> },
-          { path: 'invoices/:id/edit', element: <InvoiceEditPage /> },
-          { path: 'clients', element: <ClientsPage /> },
-          { path: 'vendors', element: <VendorsPage /> },
-          { path: 'payments/outgoing', element: <OutgoingPaymentsPage /> },
-          { path: 'approvals', element: <ApprovalsPage /> },
-          { path: 'transactions', element: <TransactionsPage /> },
-          { path: 'reports', element: <ReportsPage /> },
-          { path: 'exports', element: <ExportsPage /> },
           {
-            path: 'settings',
-            element: <SettingsLayout />,
+            // Pathless: a throw in any page lands here, inside the shell, so the sidebar survives.
+            errorElement: <RouteError />,
             children: [
-              { index: true, element: <OrgSettingsPage /> },
-              { path: 'members', element: <MembersSettingsPage /> },
-              { path: 'treasury', element: <TreasurySettingsPage /> },
-              { path: 'policies', element: <PoliciesSettingsPage /> },
-              { path: 'wallet', element: <WalletSettingsPage /> },
+              { index: true, element: <HomePage /> },
+              { path: 'invoices', element: <InvoicesPage /> },
+              { path: 'invoices/new', element: <InvoiceEditorPage /> },
+              { path: 'invoices/:id', element: <InvoiceDetailPage /> },
+              { path: 'invoices/:id/edit', element: <InvoiceEditPage /> },
+              { path: 'clients', element: <ClientsPage /> },
+              { path: 'vendors', element: <VendorsPage /> },
+              { path: 'payments/outgoing', element: <OutgoingPaymentsPage /> },
+              { path: 'approvals', element: <ApprovalsPage /> },
+              { path: 'transactions', element: <TransactionsPage /> },
+              { path: 'reports', element: <ReportsPage /> },
+              { path: 'exports', element: <ExportsPage /> },
+              {
+                path: 'settings',
+                element: <SettingsLayout />,
+                children: [
+                  { index: true, element: <OrgSettingsPage /> },
+                  { path: 'members', element: <MembersSettingsPage /> },
+                  { path: 'treasury', element: <TreasurySettingsPage /> },
+                  { path: 'policies', element: <PoliciesSettingsPage /> },
+                  { path: 'wallet', element: <WalletSettingsPage /> },
+                ],
+              },
+              { path: '*', element: <NotFoundPage /> },
             ],
           },
-          { path: '*', element: <NotFoundPage /> },
         ],
       },
     ],
