@@ -154,6 +154,17 @@ function horizonStub(horizon: string) {
         data: {},
       }),
     ),
+    // The pay page prices its fee from fee_stats; without this the request would reach real Horizon.
+    http.get(`${horizon}/fee_stats`, () => {
+      const fees = { min: '100', mode: '100', p50: '100', p70: '100', p95: '100', p99: '100' };
+      return HttpResponse.json({
+        last_ledger: '1',
+        last_ledger_base_fee: '100',
+        ledger_capacity_usage: '0.1',
+        fee_charged: { ...fees, max: '100' },
+        max_fee: { ...fees, max: '100' },
+      });
+    }),
     http.post(`${horizon}/transactions`, () =>
       HttpResponse.json({ hash: 'e'.repeat(64), successful: true, ledger: 1 }),
     ),

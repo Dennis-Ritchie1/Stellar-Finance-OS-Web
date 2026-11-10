@@ -38,7 +38,9 @@ test('invoice to paid: accountant invoices a client, client pays on the pay app'
   await expect(page.getByText('Amount due (USDC)')).toBeVisible();
   await page.getByRole('button', { name: 'Connect wallet & pay' }).click();
   await page.getByRole('button', { name: 'Confirm & sign' }).click();
-  await expect(page.getByText('Payment sent')).toBeVisible();
+  // A submitted payment replaces the pay options, so the client can't pay twice while it confirms.
+  await expect(page.getByText('Payment in progress')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Connect wallet & pay' })).toBeHidden();
 
   // --- The backend's indexer sees the payment (test-only hook), the page flips to Paid.
   await indexPayment(page, token);
